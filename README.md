@@ -1,0 +1,2 @@
+# CyberSentinels-FakeBankingAPK-Detector
+
