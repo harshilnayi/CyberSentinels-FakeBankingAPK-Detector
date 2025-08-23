@@ -1,0 +1,26 @@
+6. PPT Skeleton (start early, not last-minute)
+
+By Aug 25, create a draft PPT in /docs.
+Slides (10 total):
+
+Title + Team (CyberSentinels logo)
+
+Problem Statement (banking fraud via fake apps)
+
+Why it matters (impact, stats, cases)
+
+Existing Gaps (users can’t easily verify APKs)
+
+Our Solution (flow diagram: upload → analyze → score → evidence)
+
+Architecture (backend + rules + UI)
+
+Features (permissions scan, spoof detection, evidence report)
+
+Demo plan (3 APKs: good, suspicious, fake)
+
+Risks & Mitigations (no real malware, explainable rules, safe demo)
+
+Team roles + contributions
+
+👉 Freshers (Mansi + Hiral) can handle slides + visuals while you & Dhruv build rules.
