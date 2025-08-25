@@ -1,82 +1,17 @@
-<!-- ui/templates/dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | CyberSentinels</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="bg-gray-50 font-sans min-h-screen">
+<body>
+    <h1>📊 Dashboard</h1>
+    <p>Welcome to the dashboard! Analytics and scan results will be shown here.</p>
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-blue-600">CyberSentinels Dashboard</h1>
-    <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-blue-600 font-medium">🏠 Home</a>
-  </nav>
-
-  <!-- Dashboard Content -->
-  <div class="p-6 max-w-6xl mx-auto">
-    
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white shadow-md rounded-2xl p-6 text-center">
-        <h2 class="text-gray-500">Total Scans</h2>
-        <p class="text-2xl font-bold text-blue-600">{{ stats.total_scans }}</p>
-      </div>
-      <div class="bg-white shadow-md rounded-2xl p-6 text-center">
-        <h2 class="text-gray-500">Fake APKs</h2>
-        <p class="text-2xl font-bold text-red-600">{{ stats.fake_count }}</p>
-      </div>
-      <div class="bg-white shadow-md rounded-2xl p-6 text-center">
-        <h2 class="text-gray-500">Safe APKs</h2>
-        <p class="text-2xl font-bold text-green-600">{{ stats.safe_count }}</p>
-      </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Pie Chart -->
-      <div class="bg-white shadow-md rounded-2xl p-6">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4">Scan Distribution</h3>
-        <canvas id="scanPieChart"></canvas>
-      </div>
-
-      <!-- Recent Scans -->
-      <div class="bg-white shadow-md rounded-2xl p-6">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Scans</h3>
-        <ul class="divide-y divide-gray-200">
-          {% for scan in recent_scans %}
-            <li class="py-3 flex justify-between items-center">
-              <span class="text-gray-700">{{ scan.filename }}</span>
-              {% if scan.result == "Fake" %}
-                <span class="px-3 py-1 bg-red-100 text-red-600 rounded-lg text-sm font-medium">Fake</span>
-              {% else %}
-                <span class="px-3 py-1 bg-green-100 text-green-600 rounded-lg text-sm font-medium">Safe</span>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Chart.js Script -->
-  <script>
-    const ctx = document.getElementById('scanPieChart').getContext('2d');
-    const scanPieChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Fake APKs', 'Safe APKs'],
-        datasets: [{
-          data: [{{ stats.fake_count }}, {{ stats.safe_count }}],
-          backgroundColor: ['#f87171', '#34d399'],
-          borderWidth: 1
-        }]
-      }
-    });
-  </script>
-
+    <nav>
+        <a href="{{ url_for('home') }}">🏠 Home</a> |
+        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+    </nav>
 </body>
 </html>
