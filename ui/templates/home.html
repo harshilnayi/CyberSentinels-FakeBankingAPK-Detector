@@ -1,9 +1,50 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="p-4 bg-black rounded-4 shadow-lg border border-success">
-<h1 class="h3 mb-3">Fake Banking APK Detector</h1>
-<p class="mb-4 text-secondary">Upload any APK to get a clear, explainable risk score with Safe / Suspicious / Fake classification.</p>
-<a href="/scan" class="btn btn-success btn-lg">Start Scan</a>
-<a href="/dashboard" class="btn btn-outline-success btn-lg ms-2">View Dashboard</a>
-</div>
-{% endblock %}
+<!-- ui/templates/home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentinels | Fake Banking APK Detector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">CyberSentinels</h1>
+    <a href="{{ url_for('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium">📊 Dashboard</a>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="flex-grow flex flex-col items-center justify-center text-center px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Fake Banking APK Detector</h2>
+    <p class="text-lg text-gray-600 mb-8">Upload an APK file and we’ll analyze it for potential threats.</p>
+
+    <!-- Upload Form -->
+    <form action="{{ url_for('scan') }}" method="POST" enctype="multipart/form-data"
+          class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
+      <label class="block mb-4">
+        <span class="text-gray-700 font-medium">Choose APK file</span>
+        <input type="file" name="apk_file" accept=".apk"
+               class="mt-2 block w-full text-gray-700 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+      </label>
+
+      <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow transition">
+        🔍 Scan APK
+      </button>
+    </form>
+
+    <!-- Quick Info -->
+    <p class="mt-6 text-sm text-gray-500">
+      ⚡ Fast & Accurate | 🛡️ Protecting users from fake banking apps
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-500">
+    © 2025 CyberSentinels | Hackathon Prototype
+  </footer>
+
+</body>
+</html>
