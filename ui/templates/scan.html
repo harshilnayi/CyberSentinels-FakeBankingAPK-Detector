@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-4 bg-black rounded-4 shadow-lg border border-success">
+<h2 class="h4 mb-3">Upload APK</h2>
+<form method="post" enctype="multipart/form-data">
+<div class="mb-3">
+<input class="form-control form-control-lg" type="file" name="apk" accept=".apk" required>
+<div class="form-text text-secondary">Only .apk files. We don’t store files permanently; names are saved for history.</div>
+</div>
+<button class="btn btn-success">Scan</button>
+</form>
+</div>
+{% endblock %}
