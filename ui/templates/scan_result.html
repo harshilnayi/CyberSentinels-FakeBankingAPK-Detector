@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberSentinels - Scan Results</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .risk-high { color: #dc3545; }
+        .risk-medium { color: #ffc107; }
+        .risk-low { color: #28a745; }
+        .threat-indicator {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            margin: 0.25rem;
+            border-radius: 5px;
+            border-left: 4px solid #dc3545;
+            display: inline-block;
+        }
+        .buttons {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+        }
+        .btn-primary { background-color: #007bff; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ CyberSentinels - Scan Results</h1>
+        </div>
+        <h2>File: {{ filename }}</h2>
+        <p><strong>File Path:</strong> {{ file_path }}</p>
+        <p><strong>Risk Level:</strong> 
+            <span class="risk-{{ 'high' if risk_level == 'HIGH' else 'medium' if risk_level == 'MEDIUM' else 'low' }}">
+                {{ risk_level }}
+            </span>
+        </p>
+        <p><strong>Risk Score:</strong> {{ risk_score }}/100</p>
+        <p><strong>Threat Indicators:</strong></p>
+        <div>
+            {% if threat_indicators %}
+                {% for indicator in threat_indicators %}
+                    <span class="threat-indicator">{{ indicator.replace('_', ' ').title() }}</span>
+                {% endfor %}
+            {% else %}
+                <span>None detected</span>
+            {% endif %}
+        </div>
+        <p><strong>Recommendation:</strong> {{ recommendation }}</p>
+        <div class="buttons">
+            <a href="/scan" class="btn btn-primary">🔍 Scan Another APKs</a>
+            <a href="/" class="btn btn-secondary">🏠 Home</a>
+            <a href="/dashboard" class="btn btn-secondary">📊 Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
