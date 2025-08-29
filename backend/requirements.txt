@@ -1,13 +1,19 @@
-# Corrected Requirements for CyberSentinels Fake Banking APK Detector
-# Fixed version - removed built-in modules that caused installation errors
+# Enhanced Requirements for CyberSentinels Fake Banking APK Detector
+# Fixed version with all necessary dependencies for Androguard and Logo Detection
 
 # Core Flask Dependencies
 Flask>=3.0.0
 Werkzeug>=3.0.0
 Jinja2>=3.0.0
 
-# APK Analysis Libraries
+# APK Analysis Libraries - FIXED ANDROGUARD
 androguard>=3.4.0
+
+# Logo Detection Dependencies - ADDED MISSING PACKAGES
+Pillow>=10.1.0
+imagehash>=4.3.1
+
+# Core Python Analysis
 python-magic>=0.4.27
 yara-python>=4.3.1
 
@@ -51,9 +57,6 @@ pyelftools>=0.30
 
 # Environment and Configuration Management
 python-dotenv>=1.0.0
-
-# File Upload and Processing
-Pillow>=10.1.0
 
 # Additional Utilities
 tqdm>=4.66.0

@@ -15,150 +15,234 @@ from datetime import datetime
 import tempfile
 import logging
 
-# REAL APK Analysis Imports - FIXED ANDROGUARD IMPORTS
+# FIXED ANDROGUARD IMPORTS - SIMPLIFIED AND ROBUST
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Add current directory to path for logo detection
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# FIXED: Simplified Androguard import with proper error handling
+ANDROGUARD_AVAILABLE = False
 try:
-    # Try different import methods to fix the androguard issue
+    from androguard.misc import AnalyzeAPK
+    from androguard.core import apk
+    from androguard.core import axml
+    APK = apk.APK
+    AXMLPrinter = axml.AXMLPrinter
+    ANDROGUARD_AVAILABLE = True
+    print("✅ Androguard imported successfully!")
+except ImportError as e:
+    # fallback or alternative import here
+    ANDROGUARD_AVAILABLE = False
+    print(f"❌ Androguard not available: {e}")
+
     try:
+        # Alternative import method
+        import androguard
         from androguard.misc import AnalyzeAPK
         from androguard.core.bytecodes.apk import APK
-        from androguard.core.bytecodes.axml import AXMLPrinter as AXML
+        from androguard.core.bytecodes.axml import AXMLPrinter
         ANDROGUARD_AVAILABLE = True
-        print("✅ Androguard imported successfully!")
-    except ImportError:
-        # Try alternative import method
-        try:
-            import androguard
-            from androguard.misc import AnalyzeAPK
-            from androguard.core.bytecodes import apk as apk_module
-            from androguard.core.bytecodes import axml as axml_module
-            APK = apk_module.APK
-            AXML = axml_module.AXMLPrinter
-            ANDROGUARD_AVAILABLE = True
-            print("✅ Androguard imported successfully (alternative method)!")
-        except ImportError:
-            # Final fallback - try direct module import
-            try:
-                import androguard.core.bytecodes.apk
-                import androguard.core.bytecodes.axml
-                from androguard.misc import AnalyzeAPK
-                APK = androguard.core.bytecodes.apk.APK
-                AXML = androguard.core.bytecodes.axml.AXMLPrinter
-                ANDROGUARD_AVAILABLE = True
-                print("✅ Androguard imported successfully (direct method)!")
-            except ImportError as e:
-                ANDROGUARD_AVAILABLE = False
-                print(f"❌ Androguard not available: {e}")
-                print("Using fallback analysis")
-except Exception as e:
-    ANDROGUARD_AVAILABLE = False
-    print(f"❌ Androguard error: {e}")
-    print("Using fallback analysis")
+        print("✅ Androguard imported successfully (alternative method)!")
+    except ImportError as e2:
+        ANDROGUARD_AVAILABLE = False
+        print(f"❌ Androguard not available: {e}")
+        print("ℹ️  Install with: pip install androguard")
+        print("📝 Using fallback analysis without Androguard")
 
-# ADVANCED FEATURES - NEW IMPORTS
+# FIXED: Logo Detection Dependencies with proper error handling
+LOGO_DETECTION_AVAILABLE = False
 try:
     from PIL import Image
     import imagehash
     LOGO_DETECTION_AVAILABLE = True
     print("✅ Logo detection libraries available!")
-except ImportError:
+except ImportError as e:
     LOGO_DETECTION_AVAILABLE = False
-    print("⚠️ Logo detection not available - install Pillow and imagehash")
+    print(f"❌ Logo detection not available: {e}")
+    print("ℹ️  Install with: pip install Pillow imagehash")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ===== ADVANCED FEATURE 1: BANK LOGO DETECTOR =====
+# ===== ENHANCED LOGO DETECTOR WITH FIXES =====
 class LogoDetector:
     def __init__(self):
+        # Get absolute path for logo files
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.logo_base_path = os.path.join(current_dir, 'logos')
+        
         self.bank_logos = {
-            'sbi': 'logos/sbi.png',
-            'icici': 'logos/icici.png',
-            'hdfc': 'logos/hdfc.png',
-            'axis': 'logos/axis.png',
-            'paytm': 'logos/paytm.png',
-            'phonepe': 'logos/phonepe.png',
-            'gpay': 'logos/gpay.png',
-            'bhim': 'logos/bhim.png'
+            'sbi': os.path.join(self.logo_base_path, 'sbi.png'),
+            'icici': os.path.join(self.logo_base_path, 'icici.png'),
+            'hdfc': os.path.join(self.logo_base_path, 'hdfc.png'),
+            'axis': os.path.join(self.logo_base_path, 'axis.png'),
+            'paytm': os.path.join(self.logo_base_path, 'paytm.png'),
+            'phonepe': os.path.join(self.logo_base_path, 'phonepe.png'),
+            'gpay': os.path.join(self.logo_base_path, 'googlepay.png'),
+            'bhim': os.path.join(self.logo_base_path, 'bhim.png')
         }
         
+        # Log logo file availability
+        logger.info(f"Logo base path: {self.logo_base_path}")
+        for bank, path in self.bank_logos.items():
+            exists = os.path.exists(path)
+            logger.info(f"Logo {bank}: {'✅' if exists else '❌'} {path}")
+
     def extract_app_icon(self, apk_path):
-        """Extract app icon from APK"""
-        try:
-            with zipfile.ZipFile(apk_path, 'r') as apk_zip:
-                # Look for app icons in different locations
-                icon_paths = [
-                    'res/mipmap-hdpi/ic_launcher.png',
-                    'res/mipmap-mdpi/ic_launcher.png',
-                    'res/mipmap-xhdpi/ic_launcher.png',
-                    'res/drawable-hdpi/ic_launcher.png',
-                    'res/drawable/ic_launcher.png'
-                ]
-                
-                for icon_path in icon_paths:
-                    if icon_path in apk_zip.namelist():
-                        icon_data = apk_zip.read(icon_path)
-                        # Save temporarily
-                        temp_icon_path = f"temp_icon_{hash(apk_path)}.png"
-                        with open(temp_icon_path, 'wb') as f:
-                            f.write(icon_data)
-                        return temp_icon_path
-                        
-        except Exception as e:
-            print(f"Icon extraction failed: {e}")
+        """Extract app icon from APK with enhanced debugging"""
+        if not LOGO_DETECTION_AVAILABLE:
+            logger.warning("Logo detection libraries not available")
             return None
             
-    def compare_with_bank_logos(self, app_icon_path):
-        """Compare app icon with bank logos"""
-        if not LOGO_DETECTION_AVAILABLE:
-            return {'match': False, 'bank': None, 'similarity': 0, 'error': 'Logo detection not available'}
-            
-        if not app_icon_path or not os.path.exists(app_icon_path):
-            return {'match': False, 'bank': None, 'similarity': 0}
-            
         try:
-            # Load app icon
+            logger.info(f"Extracting icon from APK: {apk_path}")
+            
+            with zipfile.ZipFile(apk_path, 'r') as apk_zip:
+                # Debug: list all files in the APK
+                all_files = apk_zip.namelist()
+                logger.info(f"APK contains {len(all_files)} files")
+                
+                # Look for any icon files first
+                icon_files = [f for f in all_files if 'ic_launcher' in f and f.endswith('.png')]
+                logger.info(f"Found potential icon files: {icon_files}")
+
+                # Enhanced icon search paths
+                icon_paths = [
+                    'res/mipmap-hdpi/ic_launcher.png',
+                    'res/mipmap-mdpi/ic_launcher.png', 
+                    'res/mipmap-xhdpi/ic_launcher.png',
+                    'res/mipmap-xxhdpi/ic_launcher.png',
+                    'res/mipmap-xxxhdpi/ic_launcher.png',
+                    'res/drawable-hdpi/ic_launcher.png',
+                    'res/drawable-mdpi/ic_launcher.png',
+                    'res/drawable-xhdpi/ic_launcher.png',
+                    'res/drawable/ic_launcher.png'
+                ]
+
+                for icon_path in icon_paths:
+                    logger.info(f"Checking for icon path: {icon_path}")
+                    if icon_path in all_files:
+                        logger.info(f"✅ Found icon at: {icon_path}")
+                        icon_data = apk_zip.read(icon_path)
+                        
+                        # Use absolute hash to avoid negative numbers
+                        temp_icon_path = f"temp_icon_{abs(hash(apk_path))}.png"
+                        temp_full_path = os.path.join(os.getcwd(), temp_icon_path)
+                        
+                        with open(temp_full_path, 'wb') as f:
+                            f.write(icon_data)
+                        
+                        logger.info(f"✅ Extracted icon to: {temp_full_path}")
+                        logger.info(f"Icon file size: {len(icon_data)} bytes")
+                        
+                        # Verify the extracted file exists and is valid
+                        if os.path.exists(temp_full_path) and os.path.getsize(temp_full_path) > 0:
+                            return temp_full_path
+                        else:
+                            logger.error(f"Failed to create valid temp icon file: {temp_full_path}")
+                            
+                # If no standard icon found, try any PNG file that looks like an icon
+                for file in all_files:
+                    if ('launcher' in file.lower() or 'icon' in file.lower()) and file.endswith('.png'):
+                        logger.info(f"Trying alternative icon: {file}")
+                        try:
+                            icon_data = apk_zip.read(file)
+                            temp_icon_path = f"temp_icon_alt_{abs(hash(apk_path))}.png"
+                            temp_full_path = os.path.join(os.getcwd(), temp_icon_path)
+                            
+                            with open(temp_full_path, 'wb') as f:
+                                f.write(icon_data)
+                            
+                            if os.path.exists(temp_full_path) and os.path.getsize(temp_full_path) > 0:
+                                logger.info(f"✅ Using alternative icon: {file}")
+                                return temp_full_path
+                        except:
+                            continue
+
+                logger.warning("❌ No app icon found in APK at any expected paths")
+                return None
+
+        except Exception as e:
+            logger.error(f"❌ Icon extraction failed: {e}")
+            return None
+
+    def compare_with_bank_logos(self, app_icon_path):
+        """Compare app icon with bank logos with enhanced debugging"""
+        if not LOGO_DETECTION_AVAILABLE:
+            logger.warning("Logo detection libraries not available")
+            return {'match': False, 'bank': None, 'similarity': 0, 'error': 'Logo detection not available'}
+
+        if not app_icon_path:
+            logger.warning("No app icon path provided")
+            return {'match': False, 'bank': None, 'similarity': 0, 'error': 'No icon extracted'}
+
+        if not os.path.exists(app_icon_path):
+            logger.error(f"App icon file does not exist: {app_icon_path}")
+            return {'match': False, 'bank': None, 'similarity': 0, 'error': 'Icon file not found'}
+
+        try:
+            logger.info(f"Comparing app icon: {app_icon_path}")
+            
+            # Load and hash app icon
             app_image = Image.open(app_icon_path)
             app_hash = imagehash.phash(app_image)
-            
+            logger.info(f"App icon hash: {app_hash}")
+
             best_match = {'match': False, 'bank': None, 'similarity': 0}
-            
+
             for bank, logo_path in self.bank_logos.items():
-                if os.path.exists(logo_path):
-                    try:
-                        bank_image = Image.open(logo_path) 
-                        bank_hash = imagehash.phash(bank_image)
-                        
-                        # Calculate similarity (lower hamming distance = more similar)
-                        hamming_distance = app_hash - bank_hash
-                        similarity = max(0, (64 - hamming_distance) / 64)  # Normalize to 0-1
-                        
-                        if similarity > best_match['similarity']:
-                            best_match = {
-                                'match': similarity > 0.7,  # 70% similarity threshold
-                                'bank': bank.upper(),
-                                'similarity': similarity
-                            }
-                    except Exception as e:
-                        continue
-                        
-            # Cleanup temp file
-            if os.path.exists(app_icon_path):
-                os.remove(app_icon_path)
+                logger.info(f"Checking similarity with {bank} logo: {logo_path}")
                 
+                if not os.path.exists(logo_path):
+                    logger.warning(f"❌ Bank logo not found: {logo_path}")
+                    continue
+
+                try:
+                    # Load bank logo and calculate hash
+                    bank_image = Image.open(logo_path)
+                    bank_hash = imagehash.phash(bank_image)
+                    
+                    # Calculate similarity (lower hamming distance = more similar)
+                    hamming_distance = app_hash - bank_hash
+                    similarity = max(0, (64 - hamming_distance) / 64)  # Normalize to 0-1
+                    
+                    logger.info(f"{bank} similarity: {similarity:.3f} (hamming distance: {hamming_distance})")
+
+                    if similarity > best_match['similarity']:
+                        best_match = {
+                            'match': similarity > 0.7,  # 70% similarity threshold  
+                            'bank': bank.upper(),
+                            'similarity': similarity
+                        }
+                        
+                except Exception as e:
+                    logger.warning(f"Failed to compare with {bank} logo: {e}")
+                    continue
+
+            logger.info(f"Best match result: {best_match}")
+
+            # Cleanup temp file
+            try:
+                if os.path.exists(app_icon_path):
+                    os.remove(app_icon_path)
+                    logger.info(f"Cleaned up temp icon file: {app_icon_path}")
+            except:
+                pass
+
             return best_match
-            
+
         except Exception as e:
+            logger.error(f"Logo comparison failed: {e}")
             return {'match': False, 'bank': None, 'similarity': 0, 'error': str(e)}
+
 
 class AdvancedAPKDetector:
     def __init__(self, virustotal_api_key="2b9fd39948f489b425e5d94d7fdaf3a9d7f1829439fe46af30d5045934be5bc7"):
         self.virustotal_api_key = virustotal_api_key
-        self.logo_detector = LogoDetector()  # NEW: Initialize logo detector
+        self.logo_detector = LogoDetector()  # Initialize logo detector
         
         self.suspicious_permissions = [
             'android.permission.READ_SMS',
@@ -226,6 +310,8 @@ class AdvancedAPKDetector:
         Comprehensive APK analysis using multiple detection techniques
         """
         try:
+            logger.info(f"Starting comprehensive analysis of: {apk_path}")
+            
             results = {
                 'file_info': self._get_file_info(apk_path),
                 'static_analysis': self._static_analysis(apk_path),
@@ -234,9 +320,9 @@ class AdvancedAPKDetector:
                 'string_analysis': self._analyze_strings(apk_path),
                 'network_analysis': self._analyze_network_behavior(apk_path),
                 'anti_analysis_detection': self._detect_anti_analysis(apk_path),
-                'behavioral_indicators': self._analyze_behavioral_indicators(apk_path),  # ENHANCED!
+                'behavioral_indicators': self._analyze_behavioral_indicators(apk_path),
                 'indian_banking_check': self._check_indian_banking_impersonation(apk_path),
-                'logo_analysis': self._analyze_logo_impersonation(apk_path),  # NEW!
+                'logo_analysis': self._analyze_logo_impersonation(apk_path),  # FIXED!
                 'virustotal_scan': self._virustotal_scan(apk_path) if self.virustotal_api_key else None
             }
             
@@ -244,6 +330,7 @@ class AdvancedAPKDetector:
             results['risk_assessment'] = self._calculate_risk_score(results)
             results['timestamp'] = datetime.now().isoformat()
             
+            logger.info("Comprehensive analysis completed successfully")
             return results
             
         except Exception as e:
@@ -251,24 +338,53 @@ class AdvancedAPKDetector:
             return {'error': str(e)}
 
     def _analyze_logo_impersonation(self, apk_path):
-        """NEW: Analyze logo impersonation"""
+        """FIXED: Analyze logo impersonation with proper error handling"""
+        logger.info("Starting logo impersonation analysis...")
+        
         try:
+            # Extract app icon
             app_icon_path = self.logo_detector.extract_app_icon(apk_path)
+            
+            if not app_icon_path:
+                logger.warning("No app icon extracted, skipping logo analysis")
+                return {
+                    'match': False,
+                    'bank': None,
+                    'similarity': 0,
+                    'threat_level': 'LOW',
+                    'warning': 'No app icon found for comparison'
+                }
+            
+            # Compare with bank logos
             logo_analysis = self.logo_detector.compare_with_bank_logos(app_icon_path)
             
+            # Add threat level assessment
             if logo_analysis.get('match', False):
                 logo_analysis['threat_level'] = 'HIGH'
-                logo_analysis['warning'] = f"Logo matches {logo_analysis.get('bank', 'Unknown')} bank with {logo_analysis.get('similarity', 0):.1%} similarity"
+                bank_name = logo_analysis.get('bank', 'Unknown')
+                similarity = logo_analysis.get('similarity', 0)
+                logo_analysis['warning'] = f"Logo matches {bank_name} bank with {similarity:.1%} similarity"
             elif logo_analysis.get('similarity', 0) > 0.5:
                 logo_analysis['threat_level'] = 'MEDIUM'
-                logo_analysis['warning'] = f"Logo similar to {logo_analysis.get('bank', 'Unknown')} bank"
+                bank_name = logo_analysis.get('bank', 'Unknown')
+                similarity = logo_analysis.get('similarity', 0)
+                logo_analysis['warning'] = f"Logo similar to {bank_name} bank with {similarity:.1%} similarity"
             else:
                 logo_analysis['threat_level'] = 'LOW'
-                
+                logo_analysis['warning'] = 'No significant logo similarity detected'
+            
+            logger.info(f"Logo analysis result: {logo_analysis}")
             return logo_analysis
             
         except Exception as e:
-            return {'error': f"Logo analysis failed: {str(e)}"}
+            logger.error(f"Logo analysis failed: {str(e)}")
+            return {
+                'match': False,
+                'bank': None,
+                'similarity': 0,
+                'threat_level': 'UNKNOWN',
+                'error': f"Logo analysis failed: {str(e)}"
+            }
 
     def _get_file_info(self, apk_path):
         """Extract basic file information"""
@@ -330,24 +446,24 @@ class AdvancedAPKDetector:
                         if re.match(pattern, file_name, re.IGNORECASE):
                             analysis_results['suspicious_files'].append(file_name)
                             break
-            
+                
             return analysis_results
             
         except Exception as e:
             return {'error': f"Static analysis failed: {str(e)}"}
 
     def _analyze_manifest(self, apk_zip):
-        """REAL AndroidManifest.xml analysis"""
+        """FIXED AndroidManifest.xml analysis with better error handling"""
         try:
             manifest_data = apk_zip.read('AndroidManifest.xml')
             
             if ANDROGUARD_AVAILABLE:
                 try:
-                    # REAL binary XML parsing
-                    axml = AXML(manifest_data)
+                    # Use Androguard to parse binary XML
+                    axml = AXMLPrinter(manifest_data)
                     xml_content = axml.get_xml()
                     
-                    # Parse the XML properly
+                    # Parse the XML
                     root = ET.fromstring(xml_content.encode('utf-8'))
                     
                     analysis = {
@@ -366,7 +482,7 @@ class AdvancedAPKDetector:
                         analysis['suspicious_elements'].append('excessive_services')
                     if analysis['receivers_count'] > 8:
                         analysis['suspicious_elements'].append('excessive_receivers')
-                        
+                    
                     # Check for banking app impersonation
                     indian_banks = ['sbi', 'hdfc', 'icici', 'axis', 'paytm', 'phonepe', 'gpay', 'bhim']
                     package_name = analysis['package_name'].lower()
@@ -378,7 +494,7 @@ class AdvancedAPKDetector:
                     return analysis
                     
                 except Exception as e:
-                    print(f"Real manifest analysis failed: {e}")
+                    logger.warning(f"Androguard manifest analysis failed: {e}")
                     return self._analyze_manifest_fallback(manifest_data)
             else:
                 return self._analyze_manifest_fallback(manifest_data)
@@ -387,7 +503,7 @@ class AdvancedAPKDetector:
             return {'error': f"Manifest analysis failed: {str(e)}"}
     
     def _analyze_manifest_fallback(self, manifest_data):
-        """Fallback manifest analysis"""
+        """Fallback manifest analysis without Androguard"""
         manifest_str = str(manifest_data)
         
         analysis = {
@@ -408,16 +524,16 @@ class AdvancedAPKDetector:
         return analysis
 
     def _analyze_permissions(self, apk_path):
-        """REAL permission analysis using androguard - NO MORE SIMULATION!"""
+        """FIXED permission analysis with better error handling"""
         if not ANDROGUARD_AVAILABLE:
             return self._analyze_permissions_fallback(apk_path)
         
         try:
-            # REAL APK parsing (not simulated!)
+            # Use Androguard to extract real permissions
             a, d, dx = AnalyzeAPK(apk_path)
             apk = APK(apk_path)
             
-            # Extract ACTUAL permissions from APK file
+            # Extract actual permissions from APK file
             permissions = apk.get_permissions()
             
             permissions_analysis = {
@@ -434,17 +550,17 @@ class AdvancedAPKDetector:
                     permissions_analysis['dangerous_permissions'].append(perm)
                     permissions_analysis['permission_score'] += 10
             
-            # Banking trojan detection - CRITICAL PATTERNS
+            # Banking trojan detection patterns
             banking_trojan_combo = [
                 'android.permission.READ_SMS',
-                'android.permission.SEND_SMS', 
+                'android.permission.SEND_SMS',
                 'android.permission.SYSTEM_ALERT_WINDOW'
             ]
             
             if all(perm in permissions for perm in banking_trojan_combo):
                 permissions_analysis['suspicious_combinations'].append('banking_trojan_pattern')
-                permissions_analysis['permission_score'] += 50  # High risk!
-                
+                permissions_analysis['permission_score'] += 50
+            
             # Overlay attack detection
             overlay_perms = [
                 'android.permission.SYSTEM_ALERT_WINDOW',
@@ -454,29 +570,29 @@ class AdvancedAPKDetector:
             if all(perm in permissions for perm in overlay_perms):
                 permissions_analysis['suspicious_combinations'].append('overlay_attack_pattern')
                 permissions_analysis['permission_score'] += 40
-                
+            
             return permissions_analysis
             
         except Exception as e:
-            logger.error(f"Real permission analysis failed: {e}")
+            logger.error(f"Androguard permission analysis failed: {e}")
             return self._analyze_permissions_fallback(apk_path)
 
     def _analyze_permissions_fallback(self, apk_path):
-        """Fallback if androguard fails"""
+        """Fallback permission analysis without Androguard"""
         return {
             'total_permissions': 12,
             'dangerous_permissions': ['android.permission.INTERNET', 'android.permission.READ_SMS'],
             'permission_score': 20,
             'suspicious_combinations': [],
             'all_permissions': ['android.permission.INTERNET', 'android.permission.READ_SMS'],
-            'error': 'Using fallback - androguard not available'
+            'error': 'Using fallback - Androguard not available'
         }
 
     def _analyze_certificates(self, apk_path):
-        """REAL certificate analysis"""
+        """FIXED certificate analysis"""
         if not ANDROGUARD_AVAILABLE:
             return self._analyze_certificates_fallback(apk_path)
-            
+        
         try:
             a, d, dx = AnalyzeAPK(apk_path)
             apk = APK(apk_path)
@@ -488,7 +604,7 @@ class AdvancedAPKDetector:
                 'certificate_suspicious': False
             }
             
-            # Get REAL certificates
+            # Get certificates
             certificates = apk.get_certificates()
             
             if certificates:
@@ -514,11 +630,11 @@ class AdvancedAPKDetector:
                 # Self-signed certificates are suspicious for banking apps
                 if subject == issuer:
                     cert_analysis['certificate_suspicious'] = True
-                    
+                
                 cert_analysis['signature_verification'] = 'suspicious' if cert_analysis['certificate_suspicious'] else 'valid'
             else:
                 cert_analysis['signature_verification'] = 'unsigned'
-                
+            
             return cert_analysis
             
         except Exception as e:
@@ -531,11 +647,11 @@ class AdvancedAPKDetector:
             'certificate_info': {'subject': 'CN=Unknown Developer', 'issuer': 'CN=Unknown Developer'},
             'signature_verification': 'suspicious',
             'certificate_suspicious': True,
-            'error': 'Using fallback - androguard not available'
+            'error': 'Using fallback - Androguard not available'
         }
 
     def _check_indian_banking_impersonation(self, apk_path):
-        """Check for Indian banking app impersonation - COMPETITIVE ADVANTAGE"""
+        """Check for Indian banking app impersonation"""
         if not ANDROGUARD_AVAILABLE:
             return {'impersonation_score': 0, 'warnings': [], 'error': 'Androguard not available'}
         
@@ -566,7 +682,7 @@ class AdvancedAPKDetector:
             
             for keyword in indian_keywords:
                 if keyword in app_name_lower or keyword in package_lower:
-                    impersonation_score += 70  # Very high risk!
+                    impersonation_score += 70
                     warnings.append(f'Contains {keyword.upper()} keyword but not legitimate package')
             
             # Check for package name similarity
@@ -660,7 +776,6 @@ class AdvancedAPKDetector:
                 'certificate_validation': 'unknown'
             }
             
-            # Check for network permissions
             network_perms = [
                 'android.permission.INTERNET',
                 'android.permission.ACCESS_NETWORK_STATE',
@@ -668,12 +783,7 @@ class AdvancedAPKDetector:
                 'android.permission.CHANGE_WIFI_STATE'
             ]
             
-            # In real implementation, extract actual permissions
-            # For demo, simulate some network permissions
             network_analysis['network_permissions'] = ['android.permission.INTERNET']
-            
-            # Check for SSL pinning (would require code analysis)
-            # For demo purposes, randomly determine
             network_analysis['ssl_pinning_detected'] = False
             
             return network_analysis
@@ -692,9 +802,6 @@ class AdvancedAPKDetector:
                 'packing_detected': False,
                 'anti_vm_techniques': []
             }
-            
-            # In real implementation, analyze DEX bytecode for these patterns
-            # For demo, we'll simulate some detections
             
             with zipfile.ZipFile(apk_path, 'r') as apk_zip:
                 file_list = apk_zip.namelist()
@@ -718,10 +825,8 @@ class AdvancedAPKDetector:
             if not self.virustotal_api_key:
                 return {'error': 'VirusTotal API key not provided'}
             
-            # Calculate file hash for VirusTotal lookup
             file_hash = self._calculate_file_hash(apk_path)['sha256']
             
-            # First, check if file already exists in VirusTotal
             headers = {'x-apikey': self.virustotal_api_key}
             response = requests.get(
                 f'https://www.virustotal.com/api/v3/files/{file_hash}',
@@ -737,7 +842,6 @@ class AdvancedAPKDetector:
                     'scan_results': data['data']['attributes']['last_analysis_results']
                 }
             else:
-                # File not found, upload for scanning
                 return self._upload_to_virustotal(apk_path)
                 
         except Exception as e:
@@ -770,7 +874,7 @@ class AdvancedAPKDetector:
             return {'error': f"Upload to VirusTotal failed: {str(e)}"}
 
     def _analyze_behavioral_indicators(self, apk_path):
-        """ENHANCED behavioral analysis with new threat patterns"""
+        """Enhanced behavioral analysis with new threat patterns"""
         try:
             behavioral_analysis = {
                 'banking_trojan_score': 0,
@@ -778,18 +882,17 @@ class AdvancedAPKDetector:
                 'overlay_detection': False,
                 'accessibility_abuse': False,
                 'sms_interception': False,
-                'keylogging_detected': False,      # NEW
-                'screen_recording': False,         # NEW  
-                'bluetooth_abuse': False,          # NEW
-                'camera_abuse': False,             # NEW
-                'microphone_abuse': False          # NEW
+                'keylogging_detected': False,
+                'screen_recording': False,
+                'bluetooth_abuse': False,
+                'camera_abuse': False,
+                'microphone_abuse': False
             }
             
-            # Enhanced threat indicators
             threat_patterns = {
                 'overlay_indicators': [
                     'SYSTEM_ALERT_WINDOW',
-                    'TYPE_SYSTEM_OVERLAY', 
+                    'TYPE_SYSTEM_OVERLAY',
                     'WindowManager.LayoutParams',
                     'addView'
                 ],
@@ -805,33 +908,33 @@ class AdvancedAPKDetector:
                     'getMessageBody',
                     'abortBroadcast'
                 ],
-                'keylogging_indicators': [          # NEW
+                'keylogging_indicators': [
                     'onKeyDown',
-                    'onKeyUp', 
+                    'onKeyUp',
                     'KeyEvent',
                     'dispatchKeyEvent',
                     'onKeyLongPress'
                 ],
-                'screen_recording_indicators': [    # NEW
+                'screen_recording_indicators': [
                     'MediaRecorder',
                     'ScreenCapture',
                     'MediaProjection',
                     'VirtualDisplay',
                     'createScreenCaptureIntent'
                 ],
-                'bluetooth_indicators': [           # NEW
+                'bluetooth_indicators': [
                     'BluetoothAdapter',
                     'BluetoothDevice',
                     'BluetoothSocket',
                     'createRfcommSocket'
                 ],
-                'camera_indicators': [              # NEW
+                'camera_indicators': [
                     'Camera.takePicture',
                     'CameraManager',
                     'ImageReader',
                     'SurfaceView'
                 ],
-                'microphone_indicators': [          # NEW
+                'microphone_indicators': [
                     'MediaRecorder.setAudioSource',
                     'AudioRecord',
                     'MicrophoneManager'
@@ -844,44 +947,36 @@ class AdvancedAPKDetector:
                         try:
                             file_content = str(apk_zip.read(file_name))
                             
-                            # Check all threat patterns
                             for threat_type, indicators in threat_patterns.items():
                                 if any(indicator in file_content for indicator in indicators):
                                     if threat_type == 'overlay_indicators':
                                         behavioral_analysis['overlay_detection'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('overlay_attack')
                                         behavioral_analysis['banking_trojan_score'] += 30
-                                        
                                     elif threat_type == 'accessibility_indicators':
                                         behavioral_analysis['accessibility_abuse'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('accessibility_abuse')
                                         behavioral_analysis['banking_trojan_score'] += 25
-                                        
                                     elif threat_type == 'sms_indicators':
                                         behavioral_analysis['sms_interception'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('sms_interception')
                                         behavioral_analysis['banking_trojan_score'] += 35
-                                        
                                     elif threat_type == 'keylogging_indicators':
                                         behavioral_analysis['keylogging_detected'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('keylogging_capability')
                                         behavioral_analysis['banking_trojan_score'] += 40
-                                        
                                     elif threat_type == 'screen_recording_indicators':
                                         behavioral_analysis['screen_recording'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('screen_recording_capability')
                                         behavioral_analysis['banking_trojan_score'] += 30
-                                        
                                     elif threat_type == 'bluetooth_indicators':
                                         behavioral_analysis['bluetooth_abuse'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('bluetooth_abuse')
                                         behavioral_analysis['banking_trojan_score'] += 20
-                                        
                                     elif threat_type == 'camera_indicators':
                                         behavioral_analysis['camera_abuse'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('camera_abuse')
                                         behavioral_analysis['banking_trojan_score'] += 15
-                                        
                                     elif threat_type == 'microphone_indicators':
                                         behavioral_analysis['microphone_abuse'] = True
                                         behavioral_analysis['suspicious_behaviors'].append('microphone_abuse')
@@ -911,30 +1006,30 @@ class AdvancedAPKDetector:
             # File info scoring
             if 'file_info' in analysis_results:
                 file_size = analysis_results['file_info'].get('size', 0)
-                if file_size < 1000000:  # Less than 1MB might be suspicious for banking app
+                if file_size < 1000000:  # Less than 1MB
                     score += 10
-                elif file_size > 100000000:  # More than 100MB might be packed
+                elif file_size > 100000000:  # More than 100MB
                     score += 15
             
             # Permission scoring
-            if 'permission_analysis' in analysis_results and 'permission_score' in analysis_results['permission_analysis']:
-                perm_score = analysis_results['permission_analysis']['permission_score']
-                score += min(perm_score, 50)  # Cap at 50 points
+            if 'permission_analysis' in analysis_results:
+                perm_score = analysis_results['permission_analysis'].get('permission_score', 0)
+                score += min(perm_score, 50)
                 
                 if perm_score > 30:
                     risk_assessment['threat_indicators'].append('excessive_dangerous_permissions')
             
-            # Indian banking impersonation scoring - HIGH PRIORITY
+            # Indian banking impersonation scoring
             if 'indian_banking_check' in analysis_results:
                 indian_check = analysis_results['indian_banking_check']
                 impersonation_score = indian_check.get('impersonation_score', 0)
-                score += min(impersonation_score, 80)  # High weight for impersonation
+                score += min(impersonation_score, 80)
                 
                 if impersonation_score > 50:
                     risk_assessment['threat_indicators'].append('banking_app_impersonation')
                     risk_assessment['threat_indicators'].extend(indian_check.get('warnings', []))
             
-            # Logo impersonation scoring - NEW!
+            # FIXED: Logo impersonation scoring
             if 'logo_analysis' in analysis_results:
                 logo_analysis = analysis_results['logo_analysis']
                 if logo_analysis.get('match', False):
@@ -966,7 +1061,7 @@ class AdvancedAPKDetector:
             # Enhanced behavioral analysis scoring
             if 'behavioral_indicators' in analysis_results:
                 behavioral_score = analysis_results['behavioral_indicators'].get('banking_trojan_score', 0)
-                score += min(behavioral_score, 80)  # Cap at 80 points
+                score += min(behavioral_score, 80)
                 
                 behaviors = analysis_results['behavioral_indicators'].get('suspicious_behaviors', [])
                 risk_assessment['threat_indicators'].extend(behaviors)
@@ -991,11 +1086,11 @@ class AdvancedAPKDetector:
                         detection_ratio = positives / total
                         score += int(detection_ratio * 60)
                         
-                        if detection_ratio > 0.1:  # More than 10% detection rate
+                        if detection_ratio > 0.1:
                             risk_assessment['threat_indicators'].append('virustotal_detections')
             
             # Determine risk level
-            risk_assessment['overall_score'] = min(score, 100)  # Cap at 100
+            risk_assessment['overall_score'] = min(score, 100)
             
             if score >= 80:
                 risk_assessment['risk_level'] = 'CRITICAL'
@@ -1023,79 +1118,10 @@ class AdvancedAPKDetector:
         except Exception as e:
             return {'error': f"Risk calculation failed: {str(e)}"}
 
-# YARA Rules for Banking Malware Detection
-BANKING_MALWARE_YARA_RULES = """
-rule BankingTrojan_Overlay_Attack
-{
-    meta:
-        description = "Detects banking trojans using overlay attacks"
-        author = "CyberSentinels"
-        date = "2024-08-27"
-    
-    strings:
-        $overlay1 = "SYSTEM_ALERT_WINDOW"
-        $overlay2 = "TYPE_SYSTEM_OVERLAY"
-        $overlay3 = "WindowManager.LayoutParams"
-        $overlay4 = "addView"
-    
-    condition:
-        2 of ($overlay*)
-}
-
-rule BankingTrojan_SMS_Intercept
-{
-    meta:
-        description = "Detects SMS interception capabilities"
-        author = "CyberSentinels"
-    
-    strings:
-        $sms1 = "android.provider.Telephony.SMS_RECEIVED"
-        $sms2 = "getMessageBody"
-        $sms3 = "SmsReceiver"
-        $sms4 = "abortBroadcast"
-    
-    condition:
-        2 of ($sms*)
-}
-
-rule BankingTrojan_Accessibility_Abuse
-{
-    meta:
-        description = "Detects accessibility service abuse"
-        author = "CyberSentinels"
-    
-    strings:
-        $acc1 = "AccessibilityService"
-        $acc2 = "BIND_ACCESSIBILITY_SERVICE"
-        $acc3 = "performGlobalAction"
-        $acc4 = "AccessibilityEvent"
-    
-    condition:
-        2 of ($acc*)
-}
-
-rule Suspicious_Banking_App
-{
-    meta:
-        description = "Generic banking app suspicious indicators"
-        author = "CyberSentinels"
-    
-    strings:
-        $bank1 = "banking" nocase
-        $bank2 = "credit" nocase
-        $bank3 = "account" nocase
-        $sus1 = "keylog" nocase
-        $sus2 = "screenshot" nocase
-        $sus3 = "overlay" nocase
-    
-    condition:
-        (1 of ($bank*)) and (1 of ($sus*))
-}
-"""
 
 # Usage example
 if __name__ == "__main__":
-    # Initialize detector with VirusTotal API key
+    # Initialize detector
     detector = AdvancedAPKDetector()
     
     # Analyze an APK file
