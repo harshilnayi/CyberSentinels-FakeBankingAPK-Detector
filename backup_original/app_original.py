@@ -17,7 +17,7 @@ import math
 
 # ===== ENHANCED DETECTION LOGIC WITH ML IMPORT =====
 try:
-    from advanced_detection_logic import EnhancedAdvancedAPKDetector
+    from enhanced_advanced_detection_logic import EnhancedAdvancedAPKDetector
     detector = EnhancedAdvancedAPKDetector()
     print("✅ Enhanced ML-powered APK Detector loaded successfully!")
 except ImportError:

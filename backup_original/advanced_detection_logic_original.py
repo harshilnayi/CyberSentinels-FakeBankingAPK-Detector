@@ -27,7 +27,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # FIXED: Simplified Androguard import with proper error handling
 ANDROGUARD_AVAILABLE = False
-
 try:
     from androguard.misc import AnalyzeAPK
     from androguard.core import apk
@@ -40,6 +39,7 @@ except ImportError as e:
     # fallback or alternative import here
     ANDROGUARD_AVAILABLE = False
     print(f"❌ Androguard not available: {e}")
+    
     try:
         # Alternative import method
         import androguard
@@ -76,6 +76,7 @@ class LogoDetector:
         # Get absolute path for logo files
         current_dir = os.path.dirname(os.path.abspath(__file__))
         self.logo_base_path = os.path.join(current_dir, 'logos')
+        
         self.bank_logos = {
             'sbi': os.path.join(self.logo_base_path, 'sbi.png'),
             'icici': os.path.join(self.logo_base_path, 'icici.png'),
@@ -101,6 +102,7 @@ class LogoDetector:
         
         try:
             logger.info(f"Extracting icon from APK: {apk_path}")
+            
             with zipfile.ZipFile(apk_path, 'r') as apk_zip:
                 # Debug: list all files in the APK
                 all_files = apk_zip.namelist()
@@ -109,11 +111,11 @@ class LogoDetector:
                 # Look for any icon files first
                 icon_files = [f for f in all_files if 'ic_launcher' in f and f.endswith('.png')]
                 logger.info(f"Found potential icon files: {icon_files}")
-                
+
                 # Enhanced icon search paths
                 icon_paths = [
                     'res/mipmap-hdpi/ic_launcher.png',
-                    'res/mipmap-mdpi/ic_launcher.png',
+                    'res/mipmap-mdpi/ic_launcher.png', 
                     'res/mipmap-xhdpi/ic_launcher.png',
                     'res/mipmap-xxhdpi/ic_launcher.png',
                     'res/mipmap-xxxhdpi/ic_launcher.png',
@@ -122,12 +124,13 @@ class LogoDetector:
                     'res/drawable-xhdpi/ic_launcher.png',
                     'res/drawable/ic_launcher.png'
                 ]
-                
+
                 for icon_path in icon_paths:
                     logger.info(f"Checking for icon path: {icon_path}")
                     if icon_path in all_files:
                         logger.info(f"✅ Found icon at: {icon_path}")
                         icon_data = apk_zip.read(icon_path)
+                        
                         # Use absolute hash to avoid negative numbers
                         temp_icon_path = f"temp_icon_{abs(hash(apk_path))}.png"
                         temp_full_path = os.path.join(os.getcwd(), temp_icon_path)
@@ -161,10 +164,10 @@ class LogoDetector:
                                 return temp_full_path
                         except:
                             continue
-                
+
                 logger.warning("❌ No app icon found in APK at any expected paths")
                 return None
-                
+
         except Exception as e:
             logger.error(f"❌ Icon extraction failed: {e}")
             return None
@@ -174,15 +177,15 @@ class LogoDetector:
         if not LOGO_DETECTION_AVAILABLE:
             logger.warning("Logo detection libraries not available")
             return {'match': False, 'bank': None, 'similarity': 0, 'error': 'Logo detection not available'}
-        
+
         if not app_icon_path:
             logger.warning("No app icon path provided")
             return {'match': False, 'bank': None, 'similarity': 0, 'error': 'No icon extracted'}
-        
+
         if not os.path.exists(app_icon_path):
             logger.error(f"App icon file does not exist: {app_icon_path}")
             return {'match': False, 'bank': None, 'similarity': 0, 'error': 'Icon file not found'}
-        
+
         try:
             logger.info(f"Comparing app icon: {app_icon_path}")
             
@@ -190,16 +193,16 @@ class LogoDetector:
             app_image = Image.open(app_icon_path)
             app_hash = imagehash.phash(app_image)
             logger.info(f"App icon hash: {app_hash}")
-            
+
             best_match = {'match': False, 'bank': None, 'similarity': 0}
-            
+
             for bank, logo_path in self.bank_logos.items():
                 logger.info(f"Checking similarity with {bank} logo: {logo_path}")
                 
                 if not os.path.exists(logo_path):
                     logger.warning(f"❌ Bank logo not found: {logo_path}")
                     continue
-                
+
                 try:
                     # Load bank logo and calculate hash
                     bank_image = Image.open(logo_path)
@@ -207,23 +210,23 @@ class LogoDetector:
                     
                     # Calculate similarity (lower hamming distance = more similar)
                     hamming_distance = app_hash - bank_hash
-                    similarity = max(0, (64 - hamming_distance) / 64)  # Normalize to 0-1
+                    similarity = max(0, (64 - hamming_distance) / 64) # Normalize to 0-1
                     
                     logger.info(f"{bank} similarity: {similarity:.3f} (hamming distance: {hamming_distance})")
-                    
+
                     if similarity > best_match['similarity']:
                         best_match = {
-                            'match': similarity > 0.7,  # 70% similarity threshold
+                            'match': similarity > 0.7, # 70% similarity threshold 
                             'bank': bank.upper(),
                             'similarity': similarity
                         }
-                
+                    
                 except Exception as e:
                     logger.warning(f"Failed to compare with {bank} logo: {e}")
                     continue
-            
+
             logger.info(f"Best match result: {best_match}")
-            
+
             # Cleanup temp file
             try:
                 if os.path.exists(app_icon_path):
@@ -231,12 +234,13 @@ class LogoDetector:
                     logger.info(f"Cleaned up temp icon file: {app_icon_path}")
             except:
                 pass
-            
+
             return best_match
-            
+
         except Exception as e:
             logger.error(f"Logo comparison failed: {e}")
             return {'match': False, 'bank': None, 'similarity': 0, 'error': str(e)}
+
 
 # ===== NEW: ML FEATURE EXTRACTOR (ONLY ADDS FUNCTIONALITY) =====
 try:
@@ -254,12 +258,12 @@ class MLFeatureExtractor:
     
     def __init__(self):
         self.feature_count = 50  # Simplified feature set
-    
+        
     def extract_ml_features(self, analysis_results):
         """Extract ML features from your existing analysis results - NO CHANGES to analysis_results"""
         if not ML_AVAILABLE:
             return None
-        
+            
         try:
             features = np.zeros(self.feature_count)
             
@@ -273,7 +277,7 @@ class MLFeatureExtractor:
             # File features
             features[0] = min(file_info.get('size', 0) / 50_000_000, 1.0)  # Normalized file size
             
-            # Permission features
+            # Permission features  
             features[1] = perm_analysis.get('total_permissions', 0) / 50.0  # Normalized
             features[2] = len(perm_analysis.get('dangerous_permissions', [])) / 20.0
             features[3] = perm_analysis.get('permission_score', 0) / 100.0
@@ -302,7 +306,7 @@ class MLFeatureExtractor:
             # Fill rest with normalized values
             for i in range(16, self.feature_count):
                 features[i] = 0.5  # Default value
-            
+                
             return features
             
         except Exception as e:
@@ -316,12 +320,12 @@ class SimpleMLClassifier:
     def __init__(self):
         self.model_trained = False
         self.weights = np.random.random(50) if ML_AVAILABLE else None
-    
+        
     def predict_probability(self, features):
         """Simple prediction - just adds ML insight, doesn't change existing logic"""
         if not ML_AVAILABLE or features is None:
             return 0.5  # Neutral prediction
-        
+            
         try:
             # Simple linear model for demo (replace with real trained model)
             score = np.dot(features, self.weights if self.weights is not None else np.ones(len(features)))
@@ -333,7 +337,7 @@ class SimpleMLClassifier:
 # ===== ENHANCED APK DETECTOR - PRESERVES ALL YOUR ORIGINAL FUNCTIONALITY =====
 class EnhancedAdvancedAPKDetector:
     """
-    Enhanced version of YOUR AdvancedAPKDetector
+    Enhanced version of YOUR AdvancedAPKDetector 
     PRESERVES ALL EXISTING FUNCTIONALITY - ONLY ADDS ML ENHANCEMENT
     """
     
@@ -473,8 +477,8 @@ class EnhancedAdvancedAPKDetector:
                         if re.match(pattern, file_name, re.IGNORECASE):
                             analysis_results['suspicious_files'].append(file_name)
                             break
-            
-            return analysis_results
+                
+                return analysis_results
             
         except Exception as e:
             return {'error': f"Static analysis failed: {str(e)}"}
@@ -528,10 +532,11 @@ class EnhancedAdvancedAPKDetector:
                 
         except Exception as e:
             return {'error': f"Manifest analysis failed: {str(e)}"}
-
+    
     def _analyze_manifest_fallback(self, manifest_data):
         """YOUR ORIGINAL METHOD - UNCHANGED"""
         manifest_str = str(manifest_data)
+        
         analysis = {
             'permissions_count': manifest_str.count('permission'),
             'activities_count': manifest_str.count('activity'),
@@ -546,7 +551,7 @@ class EnhancedAdvancedAPKDetector:
             analysis['suspicious_elements'].append('excessive_permissions')
         if analysis['services_count'] > 10:
             analysis['suspicious_elements'].append('excessive_services')
-        
+            
         return analysis
 
     def _analyze_permissions(self, apk_path):
@@ -632,6 +637,7 @@ class EnhancedAdvancedAPKDetector:
             
             # Get certificates
             certificates = apk.get_certificates()
+            
             if certificates:
                 cert_analysis['is_signed'] = True
                 cert = certificates[0]
@@ -1018,6 +1024,7 @@ class EnhancedAdvancedAPKDetector:
     def _analyze_logo_impersonation(self, apk_path):
         """YOUR ORIGINAL METHOD - UNCHANGED"""
         logger.info("Starting logo impersonation analysis...")
+        
         try:
             # Extract app icon
             app_icon_path = self.logo_detector.extract_app_icon(apk_path)
@@ -1089,6 +1096,7 @@ class EnhancedAdvancedAPKDetector:
             if 'permission_analysis' in analysis_results:
                 perm_score = analysis_results['permission_analysis'].get('permission_score', 0)
                 score += min(perm_score, 50)
+                
                 if perm_score > 30:
                     risk_assessment['threat_indicators'].append('excessive_dangerous_permissions')
             
@@ -1097,9 +1105,10 @@ class EnhancedAdvancedAPKDetector:
                 indian_check = analysis_results['indian_banking_check']
                 impersonation_score = indian_check.get('impersonation_score', 0)
                 score += min(impersonation_score, 80)
+                
                 if impersonation_score > 50:
                     risk_assessment['threat_indicators'].append('banking_app_impersonation')
-                risk_assessment['threat_indicators'].extend(indian_check.get('warnings', []))
+                    risk_assessment['threat_indicators'].extend(indian_check.get('warnings', []))
             
             # Logo impersonation scoring
             if 'logo_analysis' in analysis_results:
@@ -1126,6 +1135,7 @@ class EnhancedAdvancedAPKDetector:
                 string_analysis = analysis_results['string_analysis']
                 suspicious_count = len(string_analysis.get('suspicious_strings', []))
                 score += min(suspicious_count * 3, 20)
+                
                 if suspicious_count > 5:
                     risk_assessment['threat_indicators'].append('multiple_suspicious_strings')
             
@@ -1133,6 +1143,7 @@ class EnhancedAdvancedAPKDetector:
             if 'behavioral_indicators' in analysis_results:
                 behavioral_score = analysis_results['behavioral_indicators'].get('banking_trojan_score', 0)
                 score += min(behavioral_score, 80)
+                
                 behaviors = analysis_results['behavioral_indicators'].get('suspicious_behaviors', [])
                 risk_assessment['threat_indicators'].extend(behaviors)
             
@@ -1155,6 +1166,7 @@ class EnhancedAdvancedAPKDetector:
                     if total > 0:
                         detection_ratio = positives / total
                         score += int(detection_ratio * 60)
+                        
                         if detection_ratio > 0.1:
                             risk_assessment['threat_indicators'].append('virustotal_detections')
             
@@ -1164,7 +1176,6 @@ class EnhancedAdvancedAPKDetector:
                 try:
                     # Extract ML features
                     ml_features = self.ml_feature_extractor.extract_ml_features(analysis_results)
-                    
                     if ml_features is not None:
                         # Get ML prediction
                         ml_probability = self.ml_classifier.predict_probability(ml_features)
@@ -1177,7 +1188,7 @@ class EnhancedAdvancedAPKDetector:
                             risk_assessment['threat_indicators'].append('ml_high_malware_probability')
                             ml_confidence = 'HIGH'
                         elif ml_probability > 0.6:
-                            risk_assessment['threat_indicators'].append('ml_medium_malware_probability')
+                            risk_assessment['threat_indicators'].append('ml_medium_malware_probability') 
                             ml_confidence = 'MEDIUM'
                         else:
                             ml_confidence = 'LOW'
@@ -1192,7 +1203,7 @@ class EnhancedAdvancedAPKDetector:
                         }
                         
                         logger.info(f"🤖 ML Enhancement: {ml_probability:.3f} probability, {ml_score_contribution} score added")
-                        
+                    
                 except Exception as e:
                     logger.warning(f"ML enhancement failed: {e}")
                     analysis_results['ml_analysis'] = {
@@ -1275,6 +1286,7 @@ class EnhancedAdvancedAPKDetector:
             logger.error(f"Error analyzing APK: {str(e)}")
             return {'error': str(e)}
 
+
 # ===== BACKWARD COMPATIBILITY ALIAS =====
 # This allows your existing app.py to work without any changes
 class AdvancedAPKDetector(EnhancedAdvancedAPKDetector):
@@ -1285,92 +1297,13 @@ class AdvancedAPKDetector(EnhancedAdvancedAPKDetector):
     """
     pass
 
-# ===== ENHANCED THREAT DISPLAY FUNCTION =====
-def enhance_threat_display(analysis_results):
-    """Enhanced threat display for UI - PRESERVES ALL ORIGINAL FUNCTIONALITY"""
-    enhanced_threats = []
-    
-    try:
-        # Risk assessment threats
-        risk_assessment = analysis_results.get('risk_assessment', {})
-        threat_indicators = risk_assessment.get('threat_indicators', [])
-        
-        for threat in threat_indicators:
-            if 'banking_app_impersonation' in threat:
-                enhanced_threats.append('🏦 BANKING APP IMPERSONATION DETECTED')
-            elif 'logo_impersonation' in threat or 'logo_similarity' in threat:
-                enhanced_threats.append('🎯 LOGO IMPERSONATION DETECTED')
-            elif 'excessive_dangerous_permissions' in threat:
-                enhanced_threats.append('⚠️ EXCESSIVE DANGEROUS PERMISSIONS')
-            elif 'overlay_attack' in threat:
-                enhanced_threats.append('🪟 OVERLAY ATTACK CAPABILITY')
-            elif 'sms_interception' in threat:
-                enhanced_threats.append('📱 SMS INTERCEPTION CAPABILITY')
-            elif 'keylogging' in threat:
-                enhanced_threats.append('🔑 KEYLOGGING CAPABILITY')
-            elif 'screen_recording' in threat:
-                enhanced_threats.append('📹 SCREEN RECORDING CAPABILITY')
-            elif 'ml_high_malware_probability' in threat:
-                enhanced_threats.append('🤖 HIGH ML MALWARE PROBABILITY')
-            elif 'ml_medium_malware_probability' in threat:
-                enhanced_threats.append('🤖 MEDIUM ML MALWARE PROBABILITY')
-            elif 'virustotal_detections' in threat:
-                enhanced_threats.append('🦠 VIRUSTOTAL DETECTIONS')
-            elif 'suspicious_certificate' in threat:
-                enhanced_threats.append('🛡️ SUSPICIOUS CERTIFICATE')
-            elif 'unsigned_apk' in threat:
-                enhanced_threats.append('📝 UNSIGNED APK')
-            elif 'code_obfuscation' in threat:
-                enhanced_threats.append('🔒 CODE OBFUSCATION DETECTED')
-            elif 'packed_executable' in threat:
-                enhanced_threats.append('📦 PACKED EXECUTABLE')
-            else:
-                enhanced_threats.append(f'⚠️ {threat.upper()}')
-        
-        # Add ML-specific enhancements
-        ml_analysis = analysis_results.get('ml_analysis', {})
-        if ml_analysis.get('enabled', False):
-            ml_prob = ml_analysis.get('malware_probability', 0)
-            if ml_prob > 0.8:
-                enhanced_threats.append('🤖 ML HIGH THREAT CONFIRMATION')
-            elif ml_prob > 0.6:
-                enhanced_threats.append('🤖 ML MEDIUM THREAT INDICATION')
-        
-        # Logo analysis enhancements
-        logo_analysis = analysis_results.get('logo_analysis', {})
-        if logo_analysis.get('match', False):
-            bank = logo_analysis.get('bank', 'UNKNOWN')
-            enhanced_threats.append(f'🎯 {bank} LOGO IMPERSONATION')
-        elif logo_analysis.get('similarity', 0) > 0.5:
-            bank = logo_analysis.get('bank', 'UNKNOWN')
-            similarity = logo_analysis.get('similarity', 0) * 100
-            enhanced_threats.append(f'🎯 SIMILAR TO {bank} ({similarity:.0f}%)')
-        
-        # Banking impersonation enhancements
-        banking_check = analysis_results.get('indian_banking_check', {})
-        if banking_check.get('impersonation_score', 0) > 70:
-            enhanced_threats.append('🏦 HIGH BANKING IMPERSONATION RISK')
-        
-        # Remove duplicates while preserving order
-        seen = set()
-        unique_threats = []
-        for threat in enhanced_threats:
-            if threat not in seen:
-                seen.add(threat)
-                unique_threats.append(threat)
-        
-        return unique_threats
-        
-    except Exception as e:
-        logger.error(f"Enhanced threat display failed: {e}")
-        return ['⚠️ THREAT ANALYSIS ERROR']
 
 # Usage example
 if __name__ == "__main__":
     # Test both original and enhanced versions
     print("=== Testing Enhanced APK Detector ===")
     
-    # Initialize enhanced detector
+    # Initialize enhanced detector  
     detector = EnhancedAdvancedAPKDetector()
     
     # Your existing code will work exactly the same
@@ -1378,7 +1311,6 @@ if __name__ == "__main__":
     
     # Analyze an APK file (same method call as before)
     apk_path = "test-malware.apk"
-    
     if os.path.exists(apk_path):
         results = detector.analyze_apk_comprehensive(apk_path)
         
@@ -1393,7 +1325,6 @@ if __name__ == "__main__":
         # Print results (same format as before)
         print(f"Risk Level: {results['risk_assessment']['risk_level']}")
         print(f"Risk Score: {results['risk_assessment']['overall_score']}")
-        
     else:
         print("Test APK file not found - but integration is ready!")
     
