@@ -577,163 +577,170 @@ def dashboard():
         <style>
             * {{ margin: 0; padding: 0; box-sizing: border-box; }}
             
-            body {{
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-                color: #fff;
-                min-height: 100vh;
-            }}
-            
-            .container {{
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
-            }}
-            
-            .header {{
-                text-align: center;
-                margin-bottom: 40px;
-                padding: 20px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 15px;
-                backdrop-filter: blur(10px);
-            }}
-            
-            .header h1 {{
-                font-size: 2.5rem;
-                margin-bottom: 10px;
-                color: #fff;
-            }}
-            
-            .ml-badge {{
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                padding: 5px 15px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                display: inline-block;
-                margin-bottom: 10px;
-            }}
-            
-            .alert-banner {{
-                background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-                padding: 15px;
-                border-radius: 10px;
-                margin-bottom: 30px;
-                text-align: center;
-                animation: pulse 2s infinite;
-            }}
-            
-            @keyframes pulse {{
-                0% {{ transform: scale(1); }}
-                50% {{ transform: scale(1.02); }}
-                100% {{ transform: scale(1); }}
-            }}
-            
-            .stats-grid {{
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                gap: 20px;
-                margin-bottom: 40px;
-            }}
-            
-            .stat-card {{
-                background: rgba(255,255,255,0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 20px;
-                text-align: center;
-                border: 1px solid rgba(255,255,255,0.2);
-                transition: transform 0.3s ease;
-            }}
-            
-            .stat-card:hover {{
-                transform: translateY(-5px);
-            }}
-            
-            .stat-card.ml-enhanced {{
-                border-color: #4ecdc4;
-                background: rgba(78, 205, 196, 0.1);
-            }}
-            
-            .stat-value {{
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: #4ecdc4;
-                margin-bottom: 5px;
-            }}
-            
-            .stat-label {{
-                font-size: 0.9rem;
-                opacity: 0.8;
-            }}
-            
-            .features-section {{
-                background: rgba(255,255,255,0.1);
-                border-radius: 15px;
-                padding: 30px;
-                margin-bottom: 40px;
-            }}
-            
-            .recent-scans {{
-                background: rgba(255,255,255,0.1);
-                border-radius: 15px;
-                padding: 30px;
-                margin-bottom: 30px;
-            }}
-            
-            .scan-item {{
-                background: rgba(255,255,255,0.05);
-                border-radius: 10px;
-                padding: 15px;
-                margin-bottom: 15px;
-                border-left: 4px solid #4ecdc4;
-            }}
-            
-            .scan-item.high {{ border-left-color: #ff6b6b; }}
-            .scan-item.critical {{ border-left-color: #ff1744; }}
-            .scan-item.medium {{ border-left-color: #ffd93d; }}
-            .scan-item.ml-enhanced {{ 
-                border-right: 4px solid #4ecdc4;
-                background: rgba(78, 205, 196, 0.1);
-            }}
-            
-            .buttons {{
-                display: flex;
-                gap: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }}
-            
-            .btn {{
-                padding: 12px 24px;
-                border: none;
-                border-radius: 25px;
-                font-weight: bold;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }}
-            
-            .btn-primary {{
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                color: white;
-            }}
-            
-            .btn-secondary {{
-                background: rgba(255,255,255,0.2);
-                color: white;
-            }}
-            
-            .btn:hover {{
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            }}
-            
-            @media (max-width: 768px) {{
-                .header h1 {{ font-size: 2rem; }}
-                .stats-grid {{ grid-template-columns: repeat(2, 1fr); }}
-                .buttons {{ flex-direction: column; align-items: center; }}
-            }}
+ :root {{
+    --primary-color: #00bcd4;
+    --secondary-color: #50c9c3;
+    --accent-color: #1e90ff;
+    --background-dark: #0a0c10;
+    --card-background: rgba(255, 255, 255, 0.04);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-light: #e0e6ec;
+    --text-muted: #9baac4;
+    --glow-primary: #00bcd4;
+    --glow-secondary: #1e90ff;
+}}
+* {{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}}
+body {{
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}}
+.container {{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}}
+.header {{
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(30, 144, 255, 0.15));
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+}}
+.header h1 {{
+    font-size: 3.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--glow-primary), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}}
+.header p {{
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}}
+.ml-badge {{
+    display: inline-block;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: #fff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}}
+.stats-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}}
+.stat-card {{
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}}
+.stat-card:hover {{
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.06);
+}}
+.stat-title {{
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}}
+.stat-value {{
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.2rem;
+}}
+.recent-scans-table {{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background: var(--card-background);
+    border-radius: 15px;
+    overflow: hidden;
+}}
+.recent-scans-table th, .recent-scans-table td {{
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-light);
+}}
+.recent-scans-table th {{
+    background: rgba(0, 188, 212, 0.08);
+    color: var(--primary-color);
+    font-weight: 600;
+}}
+.recent-scans-table tr:last-child td {{
+    border-bottom: none;
+}}
+@media (max-width: 992px) {{
+    .header {{
+        padding: 4rem 1.5rem 2rem;
+    }}
+    .header h1 {{
+        font-size: 2.8rem;
+    }}
+    .header p {{
+        font-size: 1rem;
+    }}
+    .stat-card {{
+        padding: 1.2rem;
+    }}
+}}
+@media (max-width: 768px) {{
+    .container {{
+        padding: 1rem;
+    }}
+    .header {{
+        padding: 4rem 1rem 3rem;
+    }}
+    .header h1 {{
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }}
+    .header p {{
+        font-size: 0.95rem;
+    }}
+    .stats-grid {{
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }}
+    .stat-card {{
+        padding: 1rem;
+    }}
+
+
+    }}
         </style>
     </head>
     <body>
@@ -833,12 +840,58 @@ def dashboard():
                 ''' for scan in recent_scans[:15]])}
             </div>
             
-            <div class="buttons">
-                <a href="/scan" class="btn btn-primary">🔍 New ML-Enhanced Scan</a>
-                <a href="/api/threat-intelligence" class="btn btn-secondary">📈 Export Intelligence</a>
-                <span class="btn btn-secondary">🤖 ML Status: Active</span>
-            </div>
+        <div style="display: flex; justify-content: center; gap: 1.5rem; margin: 2.5rem 0 1.5rem 0; flex-wrap: wrap;">
+    <a href="/scan" style="
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        color: #fff;
+        background: linear-gradient(45deg, #00bcd4, #1e90ff);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+    ">🔍 New ML-Enhanced Scan</a>
+    <a href="/api/threat-intelligence" style="
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        border: 1px solid #2ad2e2;
+        border-radius: 50px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        color: #00bcd4;
+        background: rgba(255,255,255,0.08);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    ">📈 Export Intelligence</a>
+    <span style="
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        border: 1px solid #2ad2e2;
+        border-radius: 50px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-align: center;
+        color: #00bcd4;
+        background: rgba(255,255,255,0.08);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    ">🤖 ML Status: Active</span>
+</div>
+            
         </div>
+        
     </body>
     </html>
     """
@@ -851,222 +904,823 @@ def scan():
     if request.method == "GET":
         # Enhanced mobile-responsive scanning interface with ML features
         return """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>CyberSentinels - ML-Enhanced APK Security Platform</title>
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    min-height: 100vh;
-                    color: #fff;
-                }
-                
-                .header {
-                    text-align: center;
-                    padding: 20px;
-                    background: rgba(255,255,255,0.1);
-                    backdrop-filter: blur(10px);
-                    margin-bottom: 30px;
-                }
-                
-                .version-badge {
-                    background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                    padding: 5px 15px;
-                    border-radius: 20px;
-                    font-size: 0.8rem;
-                    display: inline-block;
-                    margin-bottom: 10px;
-                }
-                
-                .ml-badge {
-                    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-                    padding: 5px 15px;
-                    border-radius: 20px;
-                    font-size: 0.8rem;
-                    display: inline-block;
-                    margin-bottom: 10px;
-                    margin-left: 10px;
-                }
-                
-                .container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-                
-                .upload-section {
-                    background: rgba(255,255,255,0.1);
-                    border-radius: 20px;
-                    padding: 40px;
-                    margin-bottom: 40px;
-                    backdrop-filter: blur(10px);
-                    border: 2px dashed rgba(255,255,255,0.3);
-                }
-                
-                .upload-area {
-                    text-align: center;
-                    padding: 40px;
-                    border: 2px dashed rgba(255,255,255,0.5);
-                    border-radius: 15px;
-                    transition: all 0.3s ease;
-                    cursor: pointer;
-                }
-                
-                .upload-area:hover {
-                    border-color: #4ecdc4;
-                    background: rgba(78, 205, 196, 0.1);
-                }
-                
-                .features-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                    gap: 20px;
-                    margin-top: 40px;
-                }
-                
-                .feature-card {
-                    background: rgba(255,255,255,0.1);
-                    border-radius: 15px;
-                    padding: 25px;
-                    text-align: center;
-                    backdrop-filter: blur(10px);
-                    transition: transform 0.3s ease;
-                }
-                
-                .feature-card:hover {
-                    transform: translateY(-5px);
-                }
-                
-                .feature-card.ml-enhanced {
-                    border: 2px solid #4ecdc4;
-                    background: rgba(78, 205, 196, 0.1);
-                }
-                
-                .btn {
-                    background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                    color: white;
-                    padding: 15px 30px;
-                    border: none;
-                    border-radius: 25px;
-                    font-size: 1.1rem;
-                    font-weight: bold;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    text-decoration: none;
-                    display: inline-block;
-                    margin: 10px;
-                }
-                
-                .btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-                }
-                
-                .loading {
-                    display: none;
-                    text-align: center;
-                    padding: 20px;
-                }
-                
-                @media (max-width: 768px) {
-                    .container { padding: 15px; }
-                    .upload-section { padding: 20px; }
-                    .features-grid { grid-template-columns: 1fr; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <div class="version-badge">🚀 Enhanced v2.0</div>
-                <div class="ml-badge">🤖 ML-Powered</div>
-                <h1>AI + Machine Learning Banking Security Platform</h1>
-                <p>Advanced APK analysis specialized for Indian banking threats. Enhanced with logo impersonation detection, machine learning validation, behavioral analysis, and real-time alerts. Now powered by statistical pattern recognition and algorithmic threat intelligence.</p>
-                <div style="margin-top: 20px;">
-                    <a href="/scan" class="btn">🚀 Start ML-Enhanced Scanning</a>
-                    <a href="/dashboard" class="btn">📊 View ML Dashboard</a>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSentinels - ML-Enhanced APK Security Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00bcd4;
+            --secondary-color: #50c9c3;
+            --accent-color: #1e90ff;
+            --background-dark: #0a0c10;
+            --card-background: rgba(255, 255, 255, 0.04);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-light: #e0e6ec;
+            --text-muted: #9baac4;
+            --glow-primary: #00bcd4;
+            --glow-secondary: #1e90ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.03"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0l2 2m-2-2l-2-2m2 2l-2 2m2 2l2-2" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: -1;
+            animation: backgroundPan 60s infinite linear;
+        }
+
+        @keyframes backgroundPan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(30, 144, 255, 0.15));
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .header-bg-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .header-bg-effect::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.1) 0%, transparent 70%);
+            animation: rotate-glow 20s infinite linear;
+        }
+
+        .header-bg-effect::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            width: 2px;
+            height: 120%;
+            background: linear-gradient(to bottom, rgba(0, 188, 212, 0.5), transparent);
+            animation: arrow-move 5s infinite linear;
+        }
+
+        @keyframes rotate-glow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes arrow-move {
+            0% { transform: translateY(0) scaleY(0); opacity: 0; }
+            5% { transform: translateY(0) scaleY(1); opacity: 1; }
+            95% { transform: translateY(100%) scaleY(1); opacity: 1; }
+            100% { transform: translateY(100%) scaleY(0); opacity: 0; }
+        }
+
+        .hero-graphic {
+            font-size: 8rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px var(--glow-primary);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        .header h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--glow-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .header p {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            animation: fadeIn 1.5s ease-out 0.5s forwards;
+            opacity: 0;
+            margin-bottom: 2rem;
+        }
+
+        .badge-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin: 0 0.6rem;
+            animation: fadeIn 1s ease-in-out;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge.version {
+            background: linear-gradient(45deg, #1e90ff, #007bff);
+            color: #fff;
+        }
+
+        .badge.ml-powered {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: #fff;
+        }
+        
+        .cta-buttons {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.9rem 2.2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn.primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--glow-primary), var(--glow-secondary));
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        .btn.primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--glow-primary);
+        }
+
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3.5rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .section p {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        .upload-area {
+            text-align: center;
+            padding: 3.5rem;
+            border: 2px dashed rgba(0, 188, 212, 0.3);
+            border-radius: 18px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            background: rgba(0, 188, 212, 0.03);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(0, 188, 212, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 188, 212, 0.5), inset 0 0 10px rgba(0, 188, 212, 0.2);
+        }
+
+        .upload-area .icon {
+            font-size: 4.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            animation: pulse 2.5s infinite ease-in-out;
+            text-shadow: 0 0 15px rgba(0, 188, 212, 0.6);
+        }
+
+        .upload-area h3 {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-size: 1.6rem;
+            color: var(--text-light);
+        }
+
+        .upload-area p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        .features-grid, .how-it-works-grid, .why-choose-us-grid, .creators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card, .how-it-works-card, .why-choose-us-card, .creator-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .feature-card:hover, .how-it-works-card:hover, .why-choose-us-card:hover, .creator-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .feature-card .icon, .how-it-works-card .icon, .why-choose-us-card .icon, .testimonial-card .icon {
+            font-size: 3.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+        }
+
+        .feature-card h3, .how-it-works-card h3, .why-choose-us-card h3 {
+            font-weight: 600;
+            margin-bottom: 0.7rem;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p, .how-it-works-card p, .why-choose-us-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .loading-section {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            animation: fadeIn 0.8s ease-in;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 15px;
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+        }
+
+        .loading-section .icon {
+            font-size: 4.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .loading-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Testimonials Section */
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            font-style: italic;
+            color: var(--text-muted);
+            line-height: 1.8;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+             transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .testimonial-card::before {
+            content: "\201C";
+            font-size: 4rem;
+            color: rgba(0, 188, 212, 0.4);
+            position: absolute;
+            top: 0.5rem;
+            left: 1.5rem;
+            line-height: 1;
+        }
+
+        .testimonial-card::after {
+            content: "\201D";
+            font-size: 4rem;
+            color: rgba(0, 188, 212, 0.4);
+            position: absolute;
+            bottom: 0.5rem;
+            right: 1.5rem;
+            line-height: 1;
+        }
+
+        .testimonial-card p {
+            font-size: 1.1rem;
+            margin: 0;
+            padding: 0 1rem;
+        }
+
+        .testimonial-card .author {
+            margin-top: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-style: normal;
+        }
+
+        /* Creators Section */
+        .creators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .creator-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .creator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .creator-card .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(0, 188, 212, 0.2);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            overflow: hidden;
+        }
+        
+        .creator-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+            color: var(--text-light);
+        }
+
+        .creator-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .header {
+                padding: 4rem 1.5rem 2rem;
+            }
+            .header h1 {
+                font-size: 2.8rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+            .section {
+                padding: 2rem;
+            }
+            .section h2 {
+                font-size: 2rem;
+            }
+            .upload-area, .feature-card, .how-it-works-card, .why-choose-us-card, .testimonial-card, .creator-card {
+                padding: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .header {
+                padding: 4rem 1rem 3rem;
+            }
+            .header h1 {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+            .header p {
+                font-size: 0.95rem;
+            }
+            .badge-group {
+                margin-bottom: 1.5rem;
+            }
+            .badge {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+                margin: 0 0.3rem;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            .section {
+                padding: 1.8rem;
+                margin-bottom: 2rem;
+            }
+            .section h2 {
+                font-size: 1.8rem;
+            }
+            .section p {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+            .upload-area .icon {
+                font-size: 3.5rem;
+            }
+            .upload-area h3 {
+                font-size: 1.3rem;
+            }
+            .upload-area p {
+                font-size: 0.85rem;
+            }
+            .features-grid, .how-it-works-grid, .why-choose-us-grid, .creators-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .feature-card .icon, .how-it-works-card .icon, .why-choose-us-card .icon {
+                font-size: 2.5rem;
+            }
+            .loading-section h3 {
+                font-size: 1.6rem;
+            }
+            .testimonial-card::before, .testimonial-card::after {
+                font-size: 3rem;
+            }
+            .testimonial-card p {
+                font-size: 1rem;
+                padding: 0 0.5rem;
+            }
+            .creator-card .avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            .creator-card h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-bg-effect"></div>
+    <div class="badge-group">
+        <span class="badge version">v2.0</span>
+        <span class="badge ml-powered">ML-Powered</span>
+    </div>
+    <div class="hero-graphic"><i class="fas fa-shield-alt"></i></div>
+    <h1>CyberSentinels</h1>
+    <p>Advanced APK analysis specializing in Indian banking threats. Enhanced with logo impersonation detection, machine learning validation, behavioral analysis, and real-time alerts.</p>
+    
+    <div class="cta-buttons">
+        <a href="#scanner-section" class="btn primary">Start Scanning <i class="fas fa-rocket"></i></a>
+        <a href="/dashboard" class="btn secondary">View Dashboard <i class="fas fa-chart-line"></i></a>
+    </div>
+</div>
+
+<div class="container" id="scanner-section">
+    <div class="section" data-aos="fade-up">
+        <h2>ML-Enhanced APK Security Scanner</h2>
+        <p>Upload your APK file to analyze it with our AI-powered threat detection system. Secure your digital transactions starting now.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="upload-area" onclick="document.getElementById('file-input').click();">
+                <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Drop or click to upload your APK file</h3>
+                <p>Supports APK files up to 100MB • Banking threat analysis with machine learning validation. <br> Powered by the latest in AI security from Rajkot, Gujarat.</p>
+                <input type="file" id="file-input" name="file" accept=".apk" style="display: none;" onchange="showLoading();">
+            </div>
+        </form>
+        
+        <div class="loading-section" id="loading-section">
+            <div class="icon"><i class="fas fa-spinner fa-spin"></i></div>
+            <h3>Performing ML-enhanced threat analysis...</h3>
+            <p>Our advanced algorithms are meticulously scanning your APK for known and emerging threats. This may take a few moments. Please do not close this window.</p>
+        </div>
+    </div>
+    
+    <div class="section" data-aos="fade-up">
+        <h2>How It Works</h2>
+        <p>Our powerful ML-enhanced system follows a simple, three-step process to secure your banking applications. Transparent and effective.</p>
+        <div class="how-it-works-grid">
+            <div class="how-it-works-card">
+                <div class="icon"><i class="fas fa-upload"></i></div>
+                <h3>1. Upload</h3>
+                <p>Securely upload your APK file through our encrypted portal. Your file is immediately processed for analysis.</p>
+            </div>
+            <div class="how-it-works-card">
+                <div class="icon"><i class="fas fa-server"></i></div>
+                <h3>2. Analyze</h3>
+                <p>Our AI and machine learning models perform deep static and dynamic analysis, checking for malicious code and impersonation.</p>
+            </div>
+            <div class="how-it-works-card">
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>3. Report</h3>
+                <p>Receive a comprehensive report with a detailed threat score and actionable intelligence to identify and mitigate risks.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" data-aos="fade-up">
+        <h2>Why Choose CyberSentinels?</h2>
+        <p>Experience unparalleled security with features designed to protect your digital banking experience in India.</p>
+        <div class="why-choose-us-grid">
+            <div class="why-choose-us-card">
+                <div class="icon"><i class="fas fa-fingerprint"></i></div>
+                <h3>Unmatched Accuracy</h3>
+                <p>Leveraging cutting-edge ML models for superior threat detection, minimizing false positives.</p>
+            </div>
+            <div class="why-choose-us-card">
+                <div class="icon"><i class="fas fa-globe"></i></div>
+                <h3>Indian Banking Specialization</h3>
+                <p>Context-aware analysis tailored to specific threats targeting financial institutions in India.</p>
+            </div>
+            <div class="why-choose-us-card">
+                <div class="icon"><i class="fas fa-head-side-mask"></i></div>
+                <h3>Proactive Impersonation Defense</h3>
+                <p>Visual AI detects even subtle logo spoofing, protecting users from phishing attempts.</p>
+            </div>
+            <div class="why-choose-us-card">
+                <div class="icon"><i class="fas fa-lock"></i></div>
+                <h3>Real-time Protection</h3>
+                <p>Instant alerts and intelligence sharing to stay ahead of evolving cyber threats.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section features-section" data-aos="fade-up">
+        <h2>Key Features</h2>
+        <p>Comprehensive protection powered by artificial intelligence and machine learning.</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-robot"></i></div>
+                <h3>Machine Learning Validation</h3>
+                <p>Statistical pattern recognition and algorithmic threat intelligence validate your existing rule-based analysis with enhanced accuracy.</p>
             </div>
             
-            <div class="container">
-                <div class="upload-section">
-                    <h2>🤖 ML-Enhanced Banking APK Security Scanner</h2>
-                    <p>Upload and analyze APK files with our machine learning enhanced AI-powered detection system featuring logo impersonation detection, statistical pattern recognition, advanced behavioral analysis, and real-time threat intelligence</p>
-                    
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="upload-area" onclick="document.getElementById('file-input').click();">
-                            <div style="font-size: 3rem; margin-bottom: 15px;">🤖📱</div>
-                            <h3>Drop your APK file here for ML-enhanced analysis</h3>
-                            <p>Supports APK files up to 100MB • Enhanced banking threat analysis with machine learning validation</p>
-                            <input type="file" id="file-input" name="file" accept=".apk" style="display: none;" onchange="this.form.submit();">
-                        </div>
-                    </form>
-                    
-                    <div class="loading" id="loading">
-                        <h3>🤖⚡ Performing ML-enhanced threat analysis with statistical validation...</h3>
-                        <p>This may take a few moments...</p>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h3>🤖 Machine Learning Enhanced Security Features</h3>
-                    <p>Comprehensive protection powered by artificial intelligence, machine learning, statistical pattern recognition, and advanced visual analysis</p>
-                </div>
-                
-                <div class="features-grid">
-                    <div class="feature-card ml-enhanced">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🤖</div>
-                        <h3>Machine Learning Validation</h3>
-                        <p>Statistical pattern recognition and algorithmic threat intelligence validate your existing rule-based analysis with enhanced accuracy and confidence scoring.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🏦</div>
-                        <h3>Enhanced Indian Banking Focus</h3>
-                        <p>Specialized detection for Indian banking trojans, with pre-loaded legitimate bank database, impersonation detection, and ML-enhanced behavioral analysis.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🎯</div>
-                        <h3>Logo Impersonation Detection</h3>
-                        <p>Advanced visual analysis compares app icons with legitimate bank logos using perceptual hashing to detect sophisticated impersonation attempts.</p>
-                    </div>
-                    
-                    <div class="feature-card ml-enhanced">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🧠</div>
-                        <h3>Statistical Pattern Recognition</h3>
-                        <p>Machine learning algorithms analyze behavioral patterns, permission combinations, and code structures to identify previously unknown threats with high accuracy.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🚨</div>
-                        <h3>Real-time Alert System</h3>
-                        <p>Immediate notifications to law enforcement when high-risk banking malware or ML-confirmed threats are detected, with detailed threat intelligence.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">📱</div>
-                        <h3>Mobile Optimized Interface</h3>
-                        <p>Fully responsive design optimized for field officers and mobile cybercrime investigation units with ML insights and touch-friendly controls.</p>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-university"></i></div>
+                <h3>Enhanced Indian Banking Focus</h3>
+                <p>Specialized detection for Indian banking trojans and a pre-loaded legitimate bank database for a more targeted approach.</p>
             </div>
             
-            <script>
-                document.getElementById('file-input').addEventListener('change', function() {
-                    if (this.files[0]) {
-                        document.getElementById('loading').style.display = 'block';
-                        document.querySelector('.upload-area').style.display = 'none';
-                    }
-                });
-            </script>
-        </body>
-        </html>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-eye"></i></div>
+                <h3>Logo Impersonation Detection</h3>
+                <p>Advanced visual analysis compares app icons with legitimate bank logos using perceptual hashing to detect sophisticated impersonation.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-brain"></i></div>
+                <h3>Behavioral Analysis</h3>
+                <p>Our algorithms analyze behavioral patterns and permission combinations to identify previously unknown threats with high accuracy.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-bell"></i></div>
+                <h3>Real-time Alerts</h3>
+                <p>Immediate notifications to law enforcement when high-risk banking malware is detected, with detailed threat intelligence reports.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Mobile Optimized Interface</h3>
+                <p>A fully responsive design optimized for field officers and mobile units, with touch-friendly controls and clear insights.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" data-aos="fade-up">
+        <h2>What Our Users Say</h2>
+        <p>Hear from security professionals and banking experts who trust CyberSentinels.</p>
+        <div class="features-grid">
+            <div class="testimonial-card">
+                <p>"CyberSentinels has revolutionized our APK security checks. The ML validation catches threats no other tool could!"</p>
+                <div class="author">- S. Kumar, Lead Security Analyst, Major Indian Bank</div>
+            </div>
+            <div class="testimonial-card">
+                <p>"The logo impersonation detection is a game-changer. It's an essential tool for combating modern banking fraud."</p>
+                <div class="author">- Priya Sharma, Cyber Security Consultant, Rajkot</div>
+            </div>
+            <div class="testimonial-card">
+                <p>"An intuitive interface backed by powerful AI. This is truly the future of mobile banking security."</p>
+                <div class="author">- R. Patel, Fintech Innovator</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="creators-section" data-aos="fade-up">
+        <h2>Meet the CyberSentinels Team</h2>
+        <p>A passionate group of innovators from Rajkot, Gujarat, dedicated to building a safer digital world.</p>
+        <div class="creators-grid">
+            <div class="creator-card">
+                <div class="avatar"><i class="fas fa-user-tie"></i></div>
+                <h3>Dhruv</h3>
+                <p>UI/UX Designer</p>
+            </div>
+            <div class="creator-card">
+                <div class="avatar"><i class="fas fa-code"></i></div>
+                <h3>Harshil</h3>
+                <p>Backend Developer</p>
+            </div>
+            <div class="creator-card">
+                <div class="avatar"><i class="fas fa-chalkboard-teacher"></i></div>
+                <h3>Mansi</h3>
+                <p>Presentation / Documentation</p>
+            </div>
+            <div class="creator-card">
+                <div class="avatar"><i class="fas fa-search"></i></div>
+                <h3>Hiral</h3>
+                <p>Resource Gathering / Presentation</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showLoading() {
+        document.querySelector('.upload-area').style.display = 'none';
+        document.getElementById('loading-section').style.display = 'block';
+        document.getElementById('file-input').form.submit();
+    }
+
+    // Intersection Observer for scroll animations
+    const sections = document.querySelectorAll('.section');
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            } else {
+                entry.target.classList.remove('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    // Add a class for fade-up animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+
+</body>
+</html>
         """
     
     if request.method == "POST":
@@ -1281,251 +1935,285 @@ def render_enhanced_results(filename, analysis_results, enhanced_threats, risk_l
         <style>
             * {{ margin: 0; padding: 0; box-sizing: border-box; }}
             
-            body {{
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-                color: #fff;
-                min-height: 100vh;
-                line-height: 1.6;
-            }}
-            
-            .header {{
-                text-align: center;
-                padding: 20px;
-                background: rgba(255,255,255,0.1);
-                backdrop-filter: blur(10px);
-                margin-bottom: 30px;
-            }}
-            
-            .version-badge {{
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                padding: 5px 15px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                display: inline-block;
-                margin-bottom: 10px;
-            }}
-            
-            .ml-badge {{
-                background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-                padding: 5px 15px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                display: inline-block;
-                margin-bottom: 10px;
-                margin-left: 10px;
-            }}
-            
-            .container {{
-                max-width: 1000px;
-                margin: 0 auto;
-                padding: 20px;
-            }}
-            
-            .analysis-grid {{
-                display: grid;
-                grid-template-columns: 1fr 300px;
-                gap: 30px;
-                margin-bottom: 30px;
-            }}
-            
-            .main-analysis {{
-                background: rgba(255,255,255,0.1);
-                border-radius: 20px;
-                padding: 30px;
-                backdrop-filter: blur(10px);
-            }}
-            
-            .risk-sidebar {{
-                background: rgba(255,255,255,0.1);
-                border-radius: 20px;
-                padding: 30px;
-                backdrop-filter: blur(10px);
-                height: fit-content;
-                position: sticky;
-                top: 20px;
-            }}
-            
-            .ml-section {{
-                background: rgba(78, 205, 196, 0.1);
-                border: 1px solid #4ecdc4;
-                border-radius: 15px;
-                padding: 20px;
-                margin-bottom: 20px;
-            }}
-            
-            .risk-score {{
-                text-align: center;
-                margin-bottom: 30px;
-            }}
-            
-            .score-circle {{
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                border: 8px solid {risk_color};
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                margin: 0 auto 20px;
-                background: rgba(255,255,255,0.1);
-            }}
-            
-            .score-value {{
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: {risk_color};
-            }}
-            
-            .score-label {{
-                font-size: 0.9rem;
-                opacity: 0.8;
-            }}
-            
-            .file-details {{
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-                margin-bottom: 30px;
-            }}
-            
-            .detail-item {{
-                background: rgba(255,255,255,0.05);
-                padding: 15px;
-                border-radius: 10px;
-            }}
-            
-            .detail-item.ml-enhanced {{
-                border-left: 4px solid #4ecdc4;
-                background: rgba(78, 205, 196, 0.1);
-            }}
-            
-            .detail-label {{
-                font-size: 0.9rem;
-                opacity: 0.7;
-                margin-bottom: 5px;
-            }}
-            
-            .detail-value {{
-                font-weight: bold;
-                color: #4ecdc4;
-            }}
-            
-            .banking-alert {{
-                background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 30px;
-                text-align: center;
-            }}
-            
-            .logo-alert {{
-                background: linear-gradient(45deg, #ffd93d, #ffb366);
-                color: #333;
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 30px;
-                text-align: center;
-            }}
-            
-            .ml-alert {{
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 30px;
-                text-align: center;
-            }}
-            
-            .threat-list {{
-                max-height: 300px;
-                overflow-y: auto;
-                margin-bottom: 20px;
-            }}
-            
-            .threat-item {{
-                background: rgba(255,255,255,0.1);
-                padding: 10px 15px;
-                margin-bottom: 10px;
-                border-radius: 8px;
-                border-left: 4px solid #4ecdc4;
-            }}
-            
-            .threat-item.threat-critical {{ border-left-color: #ff1744; }}
-            .threat-item.threat-high {{ border-left-color: #ff6b6b; }}
-            .threat-item.threat-medium {{ border-left-color: #ffd93d; }}
-            .threat-item.threat-ml {{
-                border-right: 4px solid #4ecdc4;
-                background: rgba(78, 205, 196, 0.1);
-            }}
-            
-            .analysis-details {{
-                background: rgba(255,255,255,0.05);
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 20px;
-            }}
-            
-            .recommendation {{
-                background: rgba(78, 205, 196, 0.2);
-                border: 1px solid #4ecdc4;
-                padding: 20px;
-                border-radius: 15px;
-                margin-bottom: 20px;
-            }}
-            
-            .buttons {{
-                display: flex;
-                gap: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-top: 30px;
-            }}
-            
-            .btn {{
-                padding: 12px 24px;
-                border: none;
-                border-radius: 25px;
-                font-weight: bold;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }}
-            
-            .btn-primary {{
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                color: white;
-            }}
-            
-            .btn-secondary {{
-                background: rgba(255,255,255,0.2);
-                color: white;
-            }}
-            
-            .btn:hover {{
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            }}
-            
-            .no-threats {{
-                text-align: center;
-                padding: 30px;
-                color: #6bcf7f;
-                font-size: 1.1rem;
-            }}
-            
-            @media (max-width: 768px) {{
-                .analysis-grid {{
-                    grid-template-columns: 1fr;
-                }}
-                .file-details {{
-                    grid-template-columns: 1fr;
-                }}
-                .buttons {{
-                    flex-direction: column;
-                    align-items: center;
-                }}
-            }}
+    body {{
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0c10 0%, #1e90ff 100%);
+    color: #e0e6ec;
+    min-height: 100vh;
+    line-height: 1.6;
+}}
+
+.header {{
+    text-align: center;
+    padding: 4rem 2rem 2rem;
+    background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(30, 144, 255, 0.15));
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 30px;
+}}
+
+.version-badge {{
+    background: linear-gradient(45deg, #1e90ff, #00bcd4);
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 600;
+}}
+
+.ml-badge {{
+    background: linear-gradient(45deg, #00bcd4, #1e90ff);
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    color: #fff;
+    font-weight: 600;
+}}
+
+.container {{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}}
+
+.analysis-grid {{
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+    margin-bottom: 30px;
+}}
+
+.main-analysis, .risk-sidebar {{
+    background: rgba(255,255,255,0.04);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+}}
+
+.risk-sidebar {{
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}}
+
+.ml-section {{
+    background: rgba(0, 188, 212, 0.08);
+    border: 1px solid #00bcd4;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}}
+
+.risk-score {{
+    text-align: center;
+    margin-bottom: 30px;
+}}
+
+.score-circle {{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 8px solid {{risk_color}};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    background: rgba(255,255,255,0.08);
+}}
+
+.score-value {{
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: {{risk_color}};
+}}
+
+.score-label {{
+    font-size: 0.9rem;
+    opacity: 0.8;
+}}
+
+.file-details {{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}}
+
+.detail-item {{
+    background: rgba(255,255,255,0.04);
+    padding: 15px;
+    border-radius: 10px;
+}}
+
+.detail-item.ml-enhanced {{
+    border-left: 4px solid #00bcd4;
+    background: rgba(0, 188, 212, 0.08);
+}}
+
+.detail-label {{
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 5px;
+}}
+
+.detail-value {{
+    font-weight: bold;
+    color: #00bcd4;
+}}
+
+.banking-alert {{
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+}}
+
+.logo-alert {{
+    background: linear-gradient(45deg, #ffd93d, #ffb366);
+    color: #333;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+}}
+
+.ml-alert {{
+    background: linear-gradient(45deg, #00bcd4, #1e90ff);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+}}
+
+.threat-list {{
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}}
+
+.threat-item {{
+    background: rgba(255,255,255,0.04);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #00bcd4;
+    color: #e0e6ec;
+}}
+
+.threat-item.threat-critical {{ border-left-color: #ff1744; }}
+.threat-item.threat-high {{ border-left-color: #ff6b6b; }}
+.threat-item.threat-medium {{ border-left-color: #ffd93d; }}
+.threat-item.threat-ml {{
+    border-right: 4px solid #00bcd4;
+    background: rgba(0, 188, 212, 0.08);
+}}
+
+.analysis-details {{
+    background: rgba(255,255,255,0.04);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}}
+
+.recommendation {{
+    background: rgba(0, 188, 212, 0.12);
+    border: 1px solid #00bcd4;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: 600;
+}}
+
+.buttons {{
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}}
+
+.btn {{
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(45deg, #232526, #414345);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    position: relative;
+    z-index: 1;
+}}
+
+.btn.btn-primary {{
+    background: linear-gradient(45deg, #00bcd4, #1e90ff);
+    color: #fff;
+}}
+
+.btn.btn-primary:hover {{
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.18), 0 0 20px #00bcd4;
+}}
+
+.btn.btn-secondary {{
+    background: rgba(255, 255, 255, 0.08);
+    color: #00bcd4;
+    border: 1px solid #00bcd4;
+    backdrop-filter: blur(5px);
+}}
+
+.btn.btn-secondary:hover {{
+    background: rgba(255, 255, 255, 0.18);
+    color: #1e90ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 188, 212, 0.12);
+}}
+
+.no-threats {{
+    text-align: center;
+    padding: 30px;
+    color: #6bcf7f;
+    font-size: 1.1rem;
+}}
+
+@media (max-width: 992px) {{
+    .header {{
+        padding: 2rem 1.5rem 1rem;
+    }}
+    .container {{
+        padding: 1rem;
+    }}
+    .analysis-grid {{
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }}
+    .file-details {{
+        grid-template-columns: 1fr;
+    }}
+    .buttons {{
+        flex-direction: column;
+        align-items: center;
+    }}
+}}
         </style>
     </head>
     <body>
