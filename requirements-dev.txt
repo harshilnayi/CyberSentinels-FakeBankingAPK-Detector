@@ -1,0 +1,229 @@
+# Development Dependencies for CyberSentinels
+
+# ======================================
+# TESTING FRAMEWORK
+# ======================================
+pytest>=7.4.0                    # Primary testing framework
+pytest-cov>=4.1.0               # Coverage reporting
+pytest-mock>=3.11.1             # Mocking utilities
+pytest-asyncio>=0.21.1          # Async testing support
+pytest-benchmark>=4.0.0         # Performance benchmarking
+pytest-html>=3.2.0              # HTML test reports
+pytest-xdist>=3.3.1             # Parallel test execution
+
+# ======================================
+# CODE QUALITY & FORMATTING
+# ======================================
+black>=23.7.0                   # Code formatting
+pylint>=2.17.5                  # Code linting
+flake8>=6.0.0                   # Style guide enforcement
+mypy>=1.5.1                     # Static type checking
+isort>=5.12.0                   # Import sorting
+autopep8>=2.0.4                 # Auto code formatting
+
+# ======================================
+# SECURITY ANALYSIS
+# ======================================
+bandit>=1.7.5                   # Security vulnerability scanner
+safety>=2.3.0                   # Dependency security checker
+semgrep>=1.38.0                 # Static analysis security tool
+
+# ======================================
+# DOCUMENTATION TOOLS
+# ======================================
+sphinx>=7.1.2                   # Documentation generation
+sphinx-rtd-theme>=1.3.0         # ReadTheDocs theme
+sphinx-autodoc-typehints>=1.24.0 # Type hints in docs
+
+# ======================================
+# PRE-COMMIT HOOKS
+# ======================================
+pre-commit>=3.4.0               # Git pre-commit hooks
+commitizen>=3.8.0               # Conventional commits
+
+# ======================================
+# DEVELOPMENT UTILITIES
+# ======================================
+ipython>=8.15.0                 # Enhanced Python shell
+jupyter>=1.0.0                  # Notebook development
+notebook>=7.0.2                 # Jupyter notebook interface
+
+# ======================================
+# PERFORMANCE PROFILING
+# ======================================
+py-spy>=0.3.14                  # Python profiler
+memory-profiler>=0.61.0         # Memory usage profiling
+line-profiler>=4.1.1            # Line-by-line profiling
+
+# ======================================
+# API TESTING & DOCUMENTATION
+# ======================================
+httpx>=0.24.1                   # HTTP client for testing
+requests-mock>=1.11.0           # Mock HTTP requests
+flask-testing>=0.8.1            # Flask testing utilities
+swagger-ui-bundle>=0.0.9        # API documentation UI
+
+# ======================================
+# DATABASE TESTING
+# ======================================
+pytest-postgresql>=5.0.0        # PostgreSQL testing fixtures
+sqlalchemy-utils>=0.41.1        # Database testing utilities
+
+# ======================================
+# ML DEVELOPMENT & TESTING
+# ======================================
+jupyter-lab>=4.0.5              # Advanced notebook interface
+tensorboard>=2.14.0             # ML experiment tracking
+mlflow>=2.6.0                   # ML lifecycle management
+scikit-plot>=0.3.7              # ML visualization tools
+
+# ======================================
+# ANDROID APK DEVELOPMENT TOOLS
+# ======================================
+apkutils>=0.10.2                # APK manipulation utilities
+python-adb>=0.3.0               # Android Debug Bridge interface
+
+# ======================================
+# MOCK DATA GENERATION
+# ======================================
+faker>=19.6.2                   # Fake data generation
+factory-boy>=3.3.0              # Model factory for testing
+mimesis>=11.1.0                 # Synthetic data generation
+
+# ======================================
+# LOAD TESTING & BENCHMARKING
+# ======================================
+locust>=2.16.1                  # Load testing framework
+pytest-benchmark>=4.0.0         # Micro-benchmarking
+
+# ======================================
+# DEBUGGING TOOLS
+# ======================================
+pdb++>=0.10.3                   # Enhanced Python debugger
+icecream>=2.1.3                 # Print debugging
+rich>=13.5.2                    # Beautiful terminal output
+colorlog>=6.7.0                 # Colored logging
+
+# ======================================
+# ENVIRONMENT MANAGEMENT
+# ======================================
+python-dotenv>=1.0.0            # Environment variable management
+pyyaml>=6.0.1                   # YAML configuration files
+
+# ======================================
+# CYBERSECURITY SPECIFIC TOOLS
+# ======================================
+yara-python>=4.3.1              # YARA malware detection
+volatility3>=2.4.1              # Memory forensics (if needed)
+pycryptodome>=3.19.0             # Cryptographic utilities
+
+# ======================================
+# VERSION CONTROL & RELEASE
+# ======================================
+bump2version>=1.0.1             # Version bumping
+twine>=4.0.2                    # Package uploading
+wheel>=0.41.2                   # Wheel package format
+
+# ======================================
+# CONTAINER DEVELOPMENT
+# ======================================
+docker>=6.1.3                   # Docker SDK for Python
+docker-compose>=1.29.2          # Docker Compose
+
+# ======================================
+# SPECIFIC PROJECT REQUIREMENTS
+# ======================================
+
+# Flask Development Extensions
+flask-debugtoolbar>=0.13.1      # Debug toolbar for Flask
+werkzeug>=2.3.7                 # WSGI utilities
+
+# Image Processing for Logo Testing
+pillow>=10.0.1                  # Image processing (already in main)
+opencv-python>=4.8.1.78         # Computer vision for advanced logo testing
+
+# Database Migration Tools
+alembic>=1.12.0                 # Database migrations
+flask-migrate>=4.0.5            # Flask database migrations
+
+# API Documentation
+flasgger>=0.9.7.1               # Swagger UI for Flask
+apispec>=6.3.0                  # API specification generation
+
+# Monitoring and Logging
+prometheus-client>=0.17.1       # Metrics collection
+structlog>=23.1.0               # Structured logging
+
+# Configuration Management
+dynaconf>=3.2.3                 # Configuration management
+marshmallow>=3.20.1             # Object serialization/validation
+
+# Task Queue for Background Processing
+celery>=5.3.1                   # Distributed task queue
+redis>=4.6.0                    # Redis client for Celery
+
+# Advanced Testing Utilities
+hypothesis>=6.82.6              # Property-based testing
+mutmut>=2.4.3                   # Mutation testing
+tox>=4.11.3                     # Multi-environment testing
+
+# ======================================
+# LINTING PLUGINS
+# ======================================
+flake8-docstrings>=1.7.0        # Docstring linting
+flake8-import-order>=0.18.2     # Import order checking
+flake8-bugbear>=23.7.10         # Additional bug finding
+flake8-bandit>=4.1.1            # Security linting
+
+# ======================================
+# TYPE CHECKING EXTENSIONS
+# ======================================
+types-requests>=2.31.0.2        # Type stubs for requests
+types-pillow>=10.0.0.3          # Type stubs for Pillow
+types-flask>=1.1.6              # Type stubs for Flask
+
+# ======================================
+# DEVELOPMENT SERVER ENHANCEMENTS
+# ======================================
+flask-cors>=4.0.0               # CORS handling for development
+flask-limiter>=3.5.0            # Rate limiting for testing
+
+# ======================================
+# MACHINE LEARNING DEVELOPMENT
+# ======================================
+seaborn>=0.12.2                 # Statistical visualization
+plotly>=5.16.1                  # Interactive plotting
+optuna>=3.3.0                   # Hyperparameter optimization
+shap>=0.42.1                    # Model explainability
+
+# ======================================
+# CYBERSECURITY RESEARCH TOOLS
+# ======================================
+scapy>=2.5.0                    # Network packet manipulation
+requests-toolbelt>=1.0.0        # Additional HTTP utilities
+cryptography>=41.0.4            # Cryptographic recipes
+
+# ======================================
+# QUALITY ASSURANCE
+# ======================================
+coverage>=7.3.1                 # Code coverage measurement
+codecov>=2.1.13                 # Coverage reporting service
+sonarqube-api>=1.3.7            # Code quality integration
+
+# ======================================
+# DEVELOPMENT WORKFLOW
+# ======================================
+invoke>=2.2.0                   # Task execution tool
+watchdog>=3.0.0                 # File system monitoring
+honcho>=1.1.0                   # Process management
+
+# ======================================
+# DATABASE DEVELOPMENT
+# ======================================
+sqlite-utils>=3.34.0            # SQLite manipulation
+datasette>=0.64.3               # Database exploration tool
+
+# Note: Some packages may have version conflicts. 
+# Run `pip-tools` to resolve dependencies:
+# pip install pip-tools
+# pip-compile requirements-dev.in

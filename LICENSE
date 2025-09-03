@@ -1,0 +1,62 @@
+MIT License
+
+Copyright (c) 2025 CyberSentinels Team - Harshil Nayi, Dhruv, Mansi, Hiral
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Additional Terms for Academic and Commercial Use
+
+### Academic and Research Use
+- ✅ Free for educational, academic, and non-commercial research purposes
+- ✅ Attribution required in academic publications and research papers
+- ✅ Contributions back to the community are encouraged
+- ✅ Students and researchers may use this for learning and academic projects
+
+### Commercial Use
+- 💼 Commercial licensing available for enterprise deployment
+- 🤝 Partnership opportunities available for security vendors and banking institutions
+- 📞 Contact the CyberSentinels team for commercial support and customization
+- 🏢 Enterprise support packages available with SLA and dedicated assistance
+
+### Banking and Financial Institution Use
+- 🏦 Special licensing terms available for banks and financial institutions
+- 🛡️ Enhanced security features and priority support for banking partners
+- 🤝 Collaboration opportunities for threat intelligence sharing
+- 📋 Compliance assistance for regulatory requirements
+
+### Contact for Commercial Licensing
+Email: harshil@cybersentinels.dev
+Subject: CyberSentinels Commercial License Inquiry
+
+---
+
+## Acknowledgments
+
+This project is built using various open-source libraries and tools. We acknowledge and thank the developers of:
+
+- Python Software Foundation
+- Flask Development Team
+- Scikit-learn Community
+- Androguard Project
+- PIL/Pillow Project
+- And all other open-source contributors whose work made this project possible
+
+For a complete list of dependencies and their licenses, see the requirements.txt file.

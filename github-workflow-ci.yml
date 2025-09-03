@@ -1,0 +1,487 @@
+name: 🧪 CI/CD Pipeline - CyberSentinels
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  PYTHON_VERSION: '3.9'
+  NODE_VERSION: '18'
+
+jobs:
+  # =====================================================
+  # CODE QUALITY & LINTING
+  # =====================================================
+  code_quality:
+    name: 🔍 Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r requirements-dev.txt
+        
+    - name: 🎨 Check Code Formatting (Black)
+      run: |
+        black --check --diff backend/ --line-length 100
+        
+    - name: 📋 Lint Code (Pylint)
+      run: |
+        pylint backend/ --rcfile=.pylintrc --fail-under=8.0
+        
+    - name: 🔍 Style Check (Flake8)
+      run: |
+        flake8 backend/ --max-line-length=100 --exclude=__pycache__
+        
+    - name: 📝 Type Check (MyPy)
+      run: |
+        mypy backend/ --ignore-missing-imports
+        
+    - name: 📊 Import Sorting (isort)
+      run: |
+        isort --check-only --diff backend/
+
+  # =====================================================
+  # SECURITY SCANNING
+  # =====================================================
+  security:
+    name: 🔒 Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Install Security Tools
+      run: |
+        pip install bandit safety semgrep
+        
+    - name: 🛡️ Security Vulnerability Scan (Bandit)
+      run: |
+        bandit -r backend/ -f json -o bandit-report.json
+        bandit -r backend/ --severity-level medium
+        
+    - name: 🔍 Dependency Security Check (Safety)
+      run: |
+        safety check --json --output safety-report.json
+        safety check
+        
+    - name: 🔎 Static Analysis Security (Semgrep)
+      run: |
+        semgrep --config=auto backend/ --json --output=semgrep-report.json
+        
+    - name: 📋 Upload Security Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+          semgrep-report.json
+
+  # =====================================================
+  # UNIT & INTEGRATION TESTS
+  # =====================================================
+  test:
+    name: 🧪 Testing Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r requirements-dev.txt
+        
+    - name: 🗄️ Set up Test Database
+      run: |
+        cd backend
+        python -c "from app import init_db; init_db()"
+        
+    - name: 🧪 Run Unit Tests
+      run: |
+        pytest tests/unit/ -v --cov=backend --cov-report=xml --cov-report=html
+        
+    - name: 🔗 Run Integration Tests
+      run: |
+        pytest tests/integration/ -v
+        
+    - name: 🤖 Run ML Tests
+      run: |
+        pytest tests/ml/ -v --benchmark-skip
+        
+    - name: 📊 Upload Coverage Reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        
+    - name: 📋 Upload Test Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-reports-${{ matrix.python-version }}
+        path: |
+          htmlcov/
+          pytest-report.html
+
+  # =====================================================
+  # MACHINE LEARNING MODEL VALIDATION
+  # =====================================================
+  ml_validation:
+    name: 🤖 ML Model Validation
+    runs-on: ubuntu-latest
+    needs: [test]
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Install ML Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r requirements-dev.txt
+        
+    - name: 🧠 Validate ML Models
+      run: |
+        cd backend
+        python -c "
+        from ml_models import CyberSentinelsMLClassifier
+        from ml_feature_extractor import CyberSentinelsFeatureExtractor
+        
+        # Test model initialization
+        classifier = CyberSentinelsMLClassifier()
+        extractor = CyberSentinelsFeatureExtractor()
+        
+        print('✅ ML components initialized successfully')
+        "
+        
+    - name: 🎯 Test Feature Extraction
+      run: |
+        cd backend
+        python ml_feature_extractor.py
+        
+    - name: 🏆 Test Model Training (Demo)
+      run: |
+        cd backend
+        python ml_models.py
+        
+    - name: 📊 Generate ML Performance Report
+      run: |
+        cd backend
+        python -c "
+        import json
+        from ml_models import BankingAPKDataProcessor
+        
+        # Create demo dataset and save info
+        X, y = BankingAPKDataProcessor.create_demo_dataset(100)
+        
+        report = {
+            'dataset_size': len(X),
+            'feature_count': X.shape[1] if len(X) > 0 else 0,
+            'malware_samples': int(y.sum()) if len(y) > 0 else 0,
+            'benign_samples': int(len(y) - y.sum()) if len(y) > 0 else 0
+        }
+        
+        with open('ml-validation-report.json', 'w') as f:
+            json.dump(report, f, indent=2)
+            
+        print('✅ ML validation completed')
+        "
+        
+    - name: 📋 Upload ML Reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: ml-validation-reports
+        path: |
+          backend/ml-validation-report.json
+
+  # =====================================================
+  # APK ANALYSIS TESTING
+  # =====================================================
+  apk_analysis:
+    name: 📱 APK Analysis Testing
+    runs-on: ubuntu-latest
+    needs: [test]
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        
+    - name: 🏗️ Test Core Detection Engine
+      run: |
+        cd backend
+        python -c "
+        from advanced_detection_logic import EnhancedAdvancedAPKDetector
+        
+        detector = EnhancedAdvancedAPKDetector()
+        print('✅ Detection engine initialized successfully')
+        
+        # Test with dummy analysis
+        dummy_results = {
+            'file_info': {'size': 1000000},
+            'permission_analysis': {'total_permissions': 10},
+            'behavioral_indicators': {'banking_trojan_score': 0}
+        }
+        
+        risk_assessment = detector._calculate_risk_score(dummy_results)
+        print(f'✅ Risk calculation works: {risk_assessment}')
+        "
+        
+    - name: 🎯 Test Logo Detection
+      run: |
+        cd backend
+        python -c "
+        from advanced_detection_logic import LogoDetector
+        
+        logo_detector = LogoDetector()
+        print('✅ Logo detector initialized')
+        print(f'📁 Logo base path: {logo_detector.logo_base_path}')
+        print(f'🏦 Bank logos configured: {len(logo_detector.bank_logos)}')
+        "
+        
+    - name: 🔍 Test Banking Intelligence
+      run: |
+        cd backend
+        python -c "
+        from advanced_detection_logic import EnhancedAdvancedAPKDetector
+        
+        detector = EnhancedAdvancedAPKDetector()
+        
+        # Test legitimate bank detection
+        legitimate_count = len(detector.indian_legitimate_banks)
+        print(f'✅ {legitimate_count} legitimate banks configured')
+        
+        # Test suspicious permission patterns
+        suspicious_count = len(detector.suspicious_permissions)
+        print(f'✅ {suspicious_count} suspicious permissions configured')
+        "
+
+  # =====================================================
+  # PERFORMANCE BENCHMARKING
+  # =====================================================
+  performance:
+    name: ⚡ Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: [test]
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install -r requirements-dev.txt
+        
+    - name: ⚡ Run Performance Benchmarks
+      run: |
+        pytest tests/performance/ --benchmark-only --benchmark-json=benchmark-results.json
+        
+    - name: 📊 Performance Analysis
+      run: |
+        python -c "
+        import json
+        import os
+        
+        if os.path.exists('benchmark-results.json'):
+            with open('benchmark-results.json', 'r') as f:
+                results = json.load(f)
+            print('✅ Performance benchmarks completed')
+            print(f'📊 Total benchmarks: {len(results.get(\"benchmarks\", []))}')
+        else:
+            print('⚠️ No benchmark results found')
+        "
+        
+    - name: 📋 Upload Performance Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-reports
+        path: benchmark-results.json
+
+  # =====================================================
+  # DOCKER BUILD & TEST
+  # =====================================================
+  docker:
+    name: 🐳 Docker Build & Test
+    runs-on: ubuntu-latest
+    needs: [code_quality, security, test]
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🏗️ Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: 🐳 Build Docker Image
+      run: |
+        docker build -t cybersentinels:test -f deploy/Dockerfile .
+        
+    - name: 🧪 Test Docker Container
+      run: |
+        # Start container in background
+        docker run -d -p 5000:5000 --name cybersentinels-test cybersentinels:test
+        
+        # Wait for container to start
+        sleep 10
+        
+        # Test health endpoint
+        curl -f http://localhost:5000/ || exit 1
+        
+        # Stop container
+        docker stop cybersentinels-test
+        
+    - name: 📊 Docker Image Info
+      run: |
+        echo "Docker image size:"
+        docker images cybersentinels:test --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+  # =====================================================
+  # DEPLOYMENT VALIDATION
+  # =====================================================
+  deploy_validation:
+    name: 🚀 Deployment Validation
+    runs-on: ubuntu-latest
+    needs: [docker]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: ✅ Deployment Readiness Check
+      run: |
+        echo "🔍 Checking deployment readiness..."
+        
+        # Check required files exist
+        required_files=(
+          "backend/app.py"
+          "backend/requirements.txt"
+          "deploy/Dockerfile"
+          "README.md"
+          "LICENSE"
+        )
+        
+        for file in "${required_files[@]}"; do
+          if [[ -f "$file" ]]; then
+            echo "✅ $file exists"
+          else
+            echo "❌ $file missing"
+            exit 1
+          fi
+        done
+        
+        echo "🎉 All deployment files present"
+        
+    - name: 📋 Generate Deployment Summary
+      run: |
+        echo "# 🚀 Deployment Summary" > deployment-summary.md
+        echo "" >> deployment-summary.md
+        echo "**Commit:** ${{ github.sha }}" >> deployment-summary.md
+        echo "**Branch:** ${{ github.ref_name }}" >> deployment-summary.md
+        echo "**Build Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> deployment-summary.md
+        echo "**Python Version:** ${{ env.PYTHON_VERSION }}" >> deployment-summary.md
+        echo "" >> deployment-summary.md
+        echo "## ✅ Validation Results" >> deployment-summary.md
+        echo "- Code Quality: Passed" >> deployment-summary.md
+        echo "- Security Scan: Passed" >> deployment-summary.md
+        echo "- Unit Tests: Passed" >> deployment-summary.md
+        echo "- Integration Tests: Passed" >> deployment-summary.md
+        echo "- Docker Build: Passed" >> deployment-summary.md
+        
+    - name: 📋 Upload Deployment Summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-summary
+        path: deployment-summary.md
+
+  # =====================================================
+  # NOTIFICATION & REPORTING
+  # =====================================================
+  notify:
+    name: 📢 Build Notification
+    runs-on: ubuntu-latest
+    needs: [code_quality, security, test, ml_validation, apk_analysis, performance, docker]
+    if: always()
+    
+    steps:
+    - name: 📊 Collect Build Status
+      run: |
+        echo "🔍 Build Status Summary:"
+        echo "Code Quality: ${{ needs.code_quality.result }}"
+        echo "Security: ${{ needs.security.result }}"
+        echo "Tests: ${{ needs.test.result }}"
+        echo "ML Validation: ${{ needs.ml_validation.result }}"
+        echo "APK Analysis: ${{ needs.apk_analysis.result }}"
+        echo "Performance: ${{ needs.performance.result }}"
+        echo "Docker: ${{ needs.docker.result }}"
+        
+    - name: 🎉 Success Notification
+      if: needs.code_quality.result == 'success' && needs.security.result == 'success' && needs.test.result == 'success'
+      run: |
+        echo "✅ CyberSentinels CI/CD Pipeline completed successfully!"
+        echo "🛡️ All security, quality, and functionality checks passed."
+        
+    - name: 🚨 Failure Notification
+      if: needs.code_quality.result == 'failure' || needs.security.result == 'failure' || needs.test.result == 'failure'
+      run: |
+        echo "❌ CyberSentinels CI/CD Pipeline failed!"
+        echo "🔍 Check the failed jobs for details."
+        exit 1

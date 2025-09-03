@@ -443,7 +443,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - 📖 **Documentation**: Check our [Wiki](https://github.com/harshilnayi/CyberSentinels-FakeBankingAPK-Detector/wiki)
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/harshilnayi/CyberSentinels-FakeBankingAPK-Detector/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/harshilnayi/CyberSentinels-FakeBankingAPK-Detector/discussions)
-- 📧 **Email**: harshil@cybersentinels.dev
+- 📧 **Email**: harshilnayi115@gmail.com
 
 ### **Professional Services**
 - 🏢 **Enterprise Support**: Custom deployment and training
