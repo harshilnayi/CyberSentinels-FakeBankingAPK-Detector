@@ -421,8 +421,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 ### **Special Thanks**
-- **🏛️ Madhya Pradesh Police Cybercrime Division** - Domain expertise and requirements
-- **🏦 Indian Banking Community** - Real-world threat intelligence and testing
+- **👾 Mohit kumar** - Arya shield digital foundation( Digitalsafeindia.com ) for providing malicious apks samples that helped us a lot to train our model 
 - **👨‍🏫 Academic Advisors** - Research guidance and validation
 - **🌐 Open Source Community** - Tools and libraries that made this possible
 
